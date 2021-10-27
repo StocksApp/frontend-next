@@ -11,7 +11,7 @@ import Link from 'next/link';
 
 const FloatingHeader = () => {
   return (
-    <Center pos="sticky" w="100vw" top="5" zIndex={1}>
+    <Center pos="sticky" w="100vw" p="5" zIndex={1}>
       <Flex
         w="60%"
         bg="gray.50"
@@ -27,13 +27,13 @@ const FloatingHeader = () => {
         </Link>
         <Spacer />
         <HStack>
-          <Link href="/stocks" passHref>
+          <Link href="stocks" passHref>
             <ChakraLink>Notowania</ChakraLink>
           </Link>
           <Link href="login" passHref>
             <ChakraLink>Zaloguj</ChakraLink>
           </Link>
-          <Link href="sign_up" passHref>
+          <Link href="sign-up" passHref>
             <ChakraLink>Zarejestruj</ChakraLink>
           </Link>
         </HStack>
