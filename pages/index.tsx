@@ -4,6 +4,7 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import NextLink from 'next/link';
 import { Link } from '@chakra-ui/react';
+import { loginPageUrl } from '../config/urls';
 
 const Home: NextPage = () => {
   return (
@@ -19,7 +20,7 @@ const Home: NextPage = () => {
           Welcome to <a href="https://nextjs.org">Next.js!</a>
         </h1>
 
-        <NextLink href="/login" passHref>
+        <NextLink href={loginPageUrl} passHref>
           <Link>Loguj się wariacie</Link>
         </NextLink>
 

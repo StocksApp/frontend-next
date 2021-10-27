@@ -13,10 +13,14 @@ import {
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
+import getConfig from 'next/config';
 import Card from '../components/molecules/Card';
+import { loginPageUrl } from '../config/urls';
 
 const Login: NextPage = () => {
   const toast = useToast();
+  const { publicRuntimeConfig } = getConfig();
+  console.log('wahtever');
   return (
     <Flex h="100vh" direction="column">
       <FloatingHeader />
@@ -32,12 +36,19 @@ const Login: NextPage = () => {
           <Input />
           <Text>Hasło</Text>
           <Input />
-          <Button onClick={() => toast({ title: 'Jeszcze nie teraz' })}>
+          <Button
+            onClick={() => {
+              toast({
+                title: 'Jeszcze nie teraz',
+              });
+              console.log('helko', publicRuntimeConfig?.API_URL);
+            }}
+          >
             Zaloguj
           </Button>
           <Text>
             Jeśli masz konto to się{' '}
-            <NextLink href="/login">
+            <NextLink href={loginPageUrl}>
               <Link color="teal.300">zaloguj</Link>
             </NextLink>
           </Text>
