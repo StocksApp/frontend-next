@@ -9,3 +9,7 @@ generates:
     config:
       withHooks: true
       withMutationFn: true
+    generates:
+  ./schema.graphql:
+    plugins:
+      - schema-ast
