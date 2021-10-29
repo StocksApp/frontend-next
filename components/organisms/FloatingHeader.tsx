@@ -8,10 +8,11 @@ import {
   Center,
 } from '@chakra-ui/react';
 import Link from 'next/link';
+import { landingPageUrl, loginPageUrl, signUpPageUrl } from '../../config/urls';
 
 const FloatingHeader = () => {
   return (
-    <Center pos="sticky" w="100vw" top="5" zIndex={1}>
+    <Center pos="sticky" w="100vw" p="5" zIndex={1}>
       <Flex
         w="60%"
         bg="gray.50"
@@ -20,20 +21,20 @@ const FloatingHeader = () => {
         borderRadius="16"
         boxShadow="0px 7px 23px #f0c000aa"
       >
-        <Link href="/">
+        <Link href={landingPageUrl}>
           <a>
             <Avatar src="/static/tracz.jpg" />
           </a>
         </Link>
         <Spacer />
         <HStack>
-          <Link href="/stocks" passHref>
+          <Link href={landingPageUrl} passHref>
             <ChakraLink>Notowania</ChakraLink>
           </Link>
-          <Link href="login" passHref>
+          <Link href={loginPageUrl} passHref>
             <ChakraLink>Zaloguj</ChakraLink>
           </Link>
-          <Link href="sign_up" passHref>
+          <Link href={signUpPageUrl} passHref>
             <ChakraLink>Zarejestruj</ChakraLink>
           </Link>
         </HStack>
