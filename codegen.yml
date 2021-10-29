@@ -1,0 +1,15 @@
+schema: 'http://localhost:8080/graphql'
+generates:
+  ./generated/graphql.tsx:
+    documents: './documents/**/*.graphql'
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withHooks: true
+      withMutationFn: true
+    generates:
+  ./schema.graphql:
+    plugins:
+      - schema-ast

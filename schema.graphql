@@ -1,0 +1,15 @@
+type Link {
+  description: String!
+  id: Int!
+  url: String!
+}
+
+type Query {
+  allLinks: [Link!]!
+  getUser(id: Int!): User
+}
+
+type User {
+  email: String!
+  id: Int!
+}
