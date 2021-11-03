@@ -12,9 +12,38 @@ import {
   Box,
 } from '@chakra-ui/react';
 import Image from 'next/image';
+import { useSignInMutation } from '../generated/graphql';
+import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { browsePageUrl } from '../config/urls';
+
+type LoginFormValues = {
+  email: string;
+  password: string;
+};
 
 const Login: NextPage = () => {
   const toast = useToast();
+  const [signIn, { data, loading }] = useSignInMutation();
+  const { push } = useRouter();
+
+  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const onSubmit = async (formValues: LoginFormValues) => {
+    try {
+      await signIn({ variables: { ...formValues } });
+    } catch (e) {
+      toast({ description: 'Something went wrong' });
+    }
+  };
+
+  useEffect(() => {
+    if (data?.signIn) {
+      push(browsePageUrl);
+    } else if (data?.signIn === false) {
+      toast({ description: 'Niepoprawne dane logowania' });
+    }
+  }, [push, data, toast]);
   return (
     <>
       <FloatingHeader />
@@ -22,14 +51,19 @@ const Login: NextPage = () => {
         <Center flexGrow={1}>
           <VStack align="left">
             <Heading>Miło Cię znowu widzieć</Heading>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Text>Email</Text>
+              <Input type="email" {...register('email', { required: true })} />
+              <Text>Hasło</Text>
+              <Input
+                type="password"
+                {...register('password', { required: true })}
+              />
+              <Button type="submit" isLoading={loading}>
+                Zaloguj
+              </Button>
+            </form>
             <Text>Podaj swój login i hasło</Text>
-            <Text>Login</Text>
-            <Input />
-            <Text>Hasło</Text>
-            <Input />
-            <Button onClick={() => toast({ title: 'Jeszcze nie teraz' })}>
-              Zaloguj
-            </Button>
           </VStack>
         </Center>
         <Box w="50vw">

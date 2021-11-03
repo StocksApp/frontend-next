@@ -8,7 +8,7 @@ import {
   Center,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import { landingPageUrl, loginPageUrl, signUpPageUrl } from '../../config/urls';
+import { loginPageUrl, signUpPageUrl, landingPageUrl } from '../../config/urls';
 
 const FloatingHeader = () => {
   return (
