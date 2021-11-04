@@ -1,3 +1,19 @@
+"""
+The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
+"""
+scalar BigDecimal
+
+type GameRow {
+  currentDate: LocalDate!
+  from: LocalDate!
+  id: Int!
+  initialWalletValue: BigDecimal!
+  isFinished: Boolean!
+  private: Boolean!
+  to: LocalDate!
+  turnDuration: Int!
+}
+
 scalar LocalDate
 
 type Marking {
@@ -15,12 +31,25 @@ type MarkingAtDay {
 }
 
 type Mutation {
+  createGame(
+    from: LocalDate!
+    initialWallet: Int!
+    private: Boolean!
+    to: LocalDate!
+    turnDuration: Int!
+  ): Int!
   createUser(email: String!, password: String!, userName: String!): Int!
   signIn(email: String!, password: String!): Boolean!
 }
 
 type Query {
-  getMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, ticker: String!): [MarkingAtDay!]!
+  getMarkings(
+    endDate: LocalDate
+    startDate: LocalDate
+    stock: String!
+    ticker: String!
+  ): [MarkingAtDay!]!
+  listJoinableGames: [GameRow!]!
   stocksSummary(stocks: [String!]): [StockSummary!]!
 }
 

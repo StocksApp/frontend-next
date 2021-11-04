@@ -13,6 +13,7 @@ import {
   Flex,
   Text,
 } from '@chakra-ui/react';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 export type SidebarProps = {
   isOpen: boolean;
@@ -22,6 +23,7 @@ export type SidebarProps = {
 
 const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
   const isDrawer = useBreakpointValue({ base: true, md: false });
+  const { gameId } = useCurrentGameContext();
 
   return !isDrawer ? (
     <Box
@@ -37,13 +39,20 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
         </Text>
         {/* <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} /> */}
       </Flex>
+      <Box p={4}>
+        <Text>
+          {gameId
+            ? `Obecnie bierzesz udział w grze ${gameId}`
+            : 'Obecnie nie bierzesz udziału w żadnej grze'}
+        </Text>
+      </Box>
       {children}
     </Box>
   ) : (
     <Drawer isOpen={isOpen} placement="left" onClose={onClose} isFullHeight>
       <DrawerOverlay>
         <DrawerContent>
-          <DrawerHeader>Header</DrawerHeader>
+          <DrawerHeader>Logo</DrawerHeader>
           <DrawerCloseButton />
           <DrawerBody>{children}</DrawerBody>
         </DrawerContent>

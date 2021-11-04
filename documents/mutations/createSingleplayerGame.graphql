@@ -1,0 +1,14 @@
+mutation createSingleplayerGame(
+  $from: LocalDate!
+  $initialWallet: Int!
+  $to: LocalDate!
+  $turnDuration: Int!
+) {
+  createGame(
+    from: $from
+    to: $to
+    initialWallet: $initialWallet
+    private: true
+    turnDuration: $turnDuration
+  )
+}

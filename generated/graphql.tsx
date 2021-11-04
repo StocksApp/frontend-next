@@ -18,7 +18,21 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `BigDecimal` scalar type represents signed fractional values with arbitrary precision. */
+  BigDecimal: any;
   LocalDate: string;
+};
+
+export type GameRow = {
+  __typename?: 'GameRow';
+  currentDate: Scalars['LocalDate'];
+  from: Scalars['LocalDate'];
+  id: Scalars['Int'];
+  initialWalletValue: Scalars['BigDecimal'];
+  isFinished: Scalars['Boolean'];
+  private: Scalars['Boolean'];
+  to: Scalars['LocalDate'];
+  turnDuration: Scalars['Int'];
 };
 
 export type Marking = {
@@ -39,8 +53,17 @@ export type MarkingAtDay = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  createGame: Scalars['Int'];
   createUser: Scalars['Int'];
   signIn: Scalars['Boolean'];
+};
+
+export type MutationCreateGameArgs = {
+  from: Scalars['LocalDate'];
+  initialWallet: Scalars['Int'];
+  private: Scalars['Boolean'];
+  to: Scalars['LocalDate'];
+  turnDuration: Scalars['Int'];
 };
 
 export type MutationCreateUserArgs = {
@@ -57,6 +80,7 @@ export type MutationSignInArgs = {
 export type Query = {
   __typename?: 'Query';
   getMarkings: Array<MarkingAtDay>;
+  listJoinableGames: Array<GameRow>;
   stocksSummary: Array<StockSummary>;
 };
 
@@ -85,6 +109,31 @@ export type StockSummary = {
   readableName: Scalars['String'];
   securities: Array<SecurityInfo>;
   startDate: Scalars['LocalDate'];
+};
+
+export type CreateMultiplayerGameMutationVariables = Exact<{
+  from: Scalars['LocalDate'];
+  initialWallet: Scalars['Int'];
+  private: Scalars['Boolean'];
+  to: Scalars['LocalDate'];
+  turnDuration: Scalars['Int'];
+}>;
+
+export type CreateMultiplayerGameMutation = {
+  __typename?: 'Mutation';
+  createGame: number;
+};
+
+export type CreateSingleplayerGameMutationVariables = Exact<{
+  from: Scalars['LocalDate'];
+  initialWallet: Scalars['Int'];
+  to: Scalars['LocalDate'];
+  turnDuration: Scalars['Int'];
+}>;
+
+export type CreateSingleplayerGameMutation = {
+  __typename?: 'Mutation';
+  createGame: number;
 };
 
 export type CreateUserMutationVariables = Exact<{
@@ -152,6 +201,20 @@ export type GetTickersQuery = {
   }>;
 };
 
+export type ListJoinableGamesQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ListJoinableGamesQuery = {
+  __typename?: 'Query';
+  listJoinableGames: Array<{
+    __typename?: 'GameRow';
+    id: number;
+    from: string;
+    to: string;
+    initialWalletValue: any;
+    turnDuration: number;
+  }>;
+};
+
 export type StocksSummaryQueryVariables = Exact<{
   stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
@@ -166,6 +229,132 @@ export type StocksSummaryQuery = {
   }>;
 };
 
+export const CreateMultiplayerGameDocument = gql`
+  mutation createMultiplayerGame(
+    $from: LocalDate!
+    $initialWallet: Int!
+    $private: Boolean!
+    $to: LocalDate!
+    $turnDuration: Int!
+  ) {
+    createGame(
+      from: $from
+      to: $to
+      initialWallet: $initialWallet
+      private: $private
+      turnDuration: $turnDuration
+    )
+  }
+`;
+export type CreateMultiplayerGameMutationFn = Apollo.MutationFunction<
+  CreateMultiplayerGameMutation,
+  CreateMultiplayerGameMutationVariables
+>;
+
+/**
+ * __useCreateMultiplayerGameMutation__
+ *
+ * To run a mutation, you first call `useCreateMultiplayerGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateMultiplayerGameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createMultiplayerGameMutation, { data, loading, error }] = useCreateMultiplayerGameMutation({
+ *   variables: {
+ *      from: // value for 'from'
+ *      initialWallet: // value for 'initialWallet'
+ *      private: // value for 'private'
+ *      to: // value for 'to'
+ *      turnDuration: // value for 'turnDuration'
+ *   },
+ * });
+ */
+export function useCreateMultiplayerGameMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateMultiplayerGameMutation,
+    CreateMultiplayerGameMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateMultiplayerGameMutation,
+    CreateMultiplayerGameMutationVariables
+  >(CreateMultiplayerGameDocument, options);
+}
+export type CreateMultiplayerGameMutationHookResult = ReturnType<
+  typeof useCreateMultiplayerGameMutation
+>;
+export type CreateMultiplayerGameMutationResult =
+  Apollo.MutationResult<CreateMultiplayerGameMutation>;
+export type CreateMultiplayerGameMutationOptions = Apollo.BaseMutationOptions<
+  CreateMultiplayerGameMutation,
+  CreateMultiplayerGameMutationVariables
+>;
+export const CreateSingleplayerGameDocument = gql`
+  mutation createSingleplayerGame(
+    $from: LocalDate!
+    $initialWallet: Int!
+    $to: LocalDate!
+    $turnDuration: Int!
+  ) {
+    createGame(
+      from: $from
+      to: $to
+      initialWallet: $initialWallet
+      private: true
+      turnDuration: $turnDuration
+    )
+  }
+`;
+export type CreateSingleplayerGameMutationFn = Apollo.MutationFunction<
+  CreateSingleplayerGameMutation,
+  CreateSingleplayerGameMutationVariables
+>;
+
+/**
+ * __useCreateSingleplayerGameMutation__
+ *
+ * To run a mutation, you first call `useCreateSingleplayerGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSingleplayerGameMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSingleplayerGameMutation, { data, loading, error }] = useCreateSingleplayerGameMutation({
+ *   variables: {
+ *      from: // value for 'from'
+ *      initialWallet: // value for 'initialWallet'
+ *      to: // value for 'to'
+ *      turnDuration: // value for 'turnDuration'
+ *   },
+ * });
+ */
+export function useCreateSingleplayerGameMutation(
+  baseOptions?: Apollo.MutationHookOptions<
+    CreateSingleplayerGameMutation,
+    CreateSingleplayerGameMutationVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<
+    CreateSingleplayerGameMutation,
+    CreateSingleplayerGameMutationVariables
+  >(CreateSingleplayerGameDocument, options);
+}
+export type CreateSingleplayerGameMutationHookResult = ReturnType<
+  typeof useCreateSingleplayerGameMutation
+>;
+export type CreateSingleplayerGameMutationResult =
+  Apollo.MutationResult<CreateSingleplayerGameMutation>;
+export type CreateSingleplayerGameMutationOptions = Apollo.BaseMutationOptions<
+  CreateSingleplayerGameMutation,
+  CreateSingleplayerGameMutationVariables
+>;
 export const CreateUserDocument = gql`
   mutation createUser($name: String!, $password: String!, $email: String!) {
     createUser(userName: $name, password: $password, email: $email)
@@ -454,6 +643,67 @@ export type GetTickersLazyQueryHookResult = ReturnType<
 export type GetTickersQueryResult = Apollo.QueryResult<
   GetTickersQuery,
   GetTickersQueryVariables
+>;
+export const ListJoinableGamesDocument = gql`
+  query listJoinableGames {
+    listJoinableGames {
+      id
+      from
+      to
+      initialWalletValue
+      turnDuration
+    }
+  }
+`;
+
+/**
+ * __useListJoinableGamesQuery__
+ *
+ * To run a query within a React component, call `useListJoinableGamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListJoinableGamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListJoinableGamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useListJoinableGamesQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    ListJoinableGamesQuery,
+    ListJoinableGamesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    ListJoinableGamesQuery,
+    ListJoinableGamesQueryVariables
+  >(ListJoinableGamesDocument, options);
+}
+export function useListJoinableGamesLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    ListJoinableGamesQuery,
+    ListJoinableGamesQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    ListJoinableGamesQuery,
+    ListJoinableGamesQueryVariables
+  >(ListJoinableGamesDocument, options);
+}
+export type ListJoinableGamesQueryHookResult = ReturnType<
+  typeof useListJoinableGamesQuery
+>;
+export type ListJoinableGamesLazyQueryHookResult = ReturnType<
+  typeof useListJoinableGamesLazyQuery
+>;
+export type ListJoinableGamesQueryResult = Apollo.QueryResult<
+  ListJoinableGamesQuery,
+  ListJoinableGamesQueryVariables
 >;
 export const StocksSummaryDocument = gql`
   query stocksSummary($stocks: [String!]) {

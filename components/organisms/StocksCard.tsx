@@ -36,7 +36,7 @@ type SearchbarFormValues = {
 const StocksCard = () => {
   const { register, handleSubmit, getValues } = useForm();
   const { data: markets } = useGetMarketsQuery();
-  const [getTickers, { data: tickers }] = useGetTickersLazyQuery();
+  const [getTickers, { data: tickers, loading }] = useGetTickersLazyQuery();
 
   const onSubmit = (formValues: SearchbarFormValues) => {
     getTickers({
@@ -77,7 +77,7 @@ const StocksCard = () => {
               />
               <Input type="date" {...register('from')} minW="150px" flex={1} />
               <Input type="date" {...register('to')} minW="150px" flex={1} />
-              <Button type="submit" isLoading={false} px={20} py={2} flex={1}>
+              <Button type="submit" isLoading={loading} px={20} py={2} flex={1}>
                 <Text mr={2}>Szukaj</Text>
                 <SearchIcon />
               </Button>

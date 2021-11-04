@@ -40,7 +40,7 @@ const TickerChart = () => {
     stock: getSingleValueFromQuery(query, 'market') ?? '',
     ticker: getSingleValueFromQuery(query, 'ticker') ?? '',
   };
-  const { data, refetch } = useGetMarkingsForTickerQuery({
+  const { data, refetch, loading } = useGetMarkingsForTickerQuery({
     variables: {
       ...tickerVariables,
       startDate: format(subDays(Date.now(), 14), 'yyyy-MM-dd'),
@@ -63,7 +63,7 @@ const TickerChart = () => {
         <Flex wrap="wrap" gridGap={2}>
           <Input type="date" {...register('from')} minW="150px" flex={1} />
           <Input type="date" {...register('to')} minW="150px" flex={1} />
-          <Button type="submit" isLoading={false} px={20} py={2} flex={1}>
+          <Button type="submit" isLoading={loading} px={20} py={2} flex={1}>
             <Text mr={2}>Szukaj</Text>
             <SearchIcon />
           </Button>
