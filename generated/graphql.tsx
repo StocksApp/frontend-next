@@ -105,6 +105,51 @@ export type SignInMutationVariables = Exact<{
 
 export type SignInMutation = { __typename?: 'Mutation'; signIn: boolean };
 
+export type GetMarketsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetMarketsQuery = {
+  __typename?: 'Query';
+  stocksSummary: Array<{
+    __typename?: 'StockSummary';
+    name: string;
+    readableName: string;
+  }>;
+};
+
+export type GetMarkingsForTickerQueryVariables = Exact<{
+  stock: Scalars['String'];
+  ticker: Scalars['String'];
+}>;
+
+export type GetMarkingsForTickerQuery = {
+  __typename?: 'Query';
+  getMarkings: Array<{
+    __typename?: 'MarkingAtDay';
+    date: any;
+    marking: {
+      __typename?: 'Marking';
+      open: number;
+      low: number;
+      high: number;
+      close: number;
+      volume: number;
+    };
+  }>;
+};
+
+export type GetTickersQueryVariables = Exact<{
+  stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+export type GetTickersQuery = {
+  __typename?: 'Query';
+  stocksSummary: Array<{
+    __typename?: 'StockSummary';
+    name: string;
+    securities: Array<{ __typename?: 'SecurityInfo'; ticker: string }>;
+  }>;
+};
+
 export type StocksSummaryQueryVariables = Exact<{
   stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
@@ -214,6 +259,187 @@ export type SignInMutationResult = Apollo.MutationResult<SignInMutation>;
 export type SignInMutationOptions = Apollo.BaseMutationOptions<
   SignInMutation,
   SignInMutationVariables
+>;
+export const GetMarketsDocument = gql`
+  query getMarkets {
+    stocksSummary {
+      name
+      readableName
+    }
+  }
+`;
+
+/**
+ * __useGetMarketsQuery__
+ *
+ * To run a query within a React component, call `useGetMarketsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMarketsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMarketsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMarketsQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetMarketsQuery,
+    GetMarketsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetMarketsQuery, GetMarketsQueryVariables>(
+    GetMarketsDocument,
+    options
+  );
+}
+export function useGetMarketsLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetMarketsQuery,
+    GetMarketsQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetMarketsQuery, GetMarketsQueryVariables>(
+    GetMarketsDocument,
+    options
+  );
+}
+export type GetMarketsQueryHookResult = ReturnType<typeof useGetMarketsQuery>;
+export type GetMarketsLazyQueryHookResult = ReturnType<
+  typeof useGetMarketsLazyQuery
+>;
+export type GetMarketsQueryResult = Apollo.QueryResult<
+  GetMarketsQuery,
+  GetMarketsQueryVariables
+>;
+export const GetMarkingsForTickerDocument = gql`
+  query getMarkingsForTicker($stock: String!, $ticker: String!) {
+    getMarkings(stock: $stock, ticker: $ticker) {
+      date
+      marking {
+        open
+        low
+        high
+        close
+        volume
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetMarkingsForTickerQuery__
+ *
+ * To run a query within a React component, call `useGetMarkingsForTickerQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMarkingsForTickerQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMarkingsForTickerQuery({
+ *   variables: {
+ *      stock: // value for 'stock'
+ *      ticker: // value for 'ticker'
+ *   },
+ * });
+ */
+export function useGetMarkingsForTickerQuery(
+  baseOptions: Apollo.QueryHookOptions<
+    GetMarkingsForTickerQuery,
+    GetMarkingsForTickerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<
+    GetMarkingsForTickerQuery,
+    GetMarkingsForTickerQueryVariables
+  >(GetMarkingsForTickerDocument, options);
+}
+export function useGetMarkingsForTickerLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetMarkingsForTickerQuery,
+    GetMarkingsForTickerQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<
+    GetMarkingsForTickerQuery,
+    GetMarkingsForTickerQueryVariables
+  >(GetMarkingsForTickerDocument, options);
+}
+export type GetMarkingsForTickerQueryHookResult = ReturnType<
+  typeof useGetMarkingsForTickerQuery
+>;
+export type GetMarkingsForTickerLazyQueryHookResult = ReturnType<
+  typeof useGetMarkingsForTickerLazyQuery
+>;
+export type GetMarkingsForTickerQueryResult = Apollo.QueryResult<
+  GetMarkingsForTickerQuery,
+  GetMarkingsForTickerQueryVariables
+>;
+export const GetTickersDocument = gql`
+  query getTickers($stocks: [String!]) {
+    stocksSummary(stocks: $stocks) {
+      name
+      securities {
+        ticker
+      }
+    }
+  }
+`;
+
+/**
+ * __useGetTickersQuery__
+ *
+ * To run a query within a React component, call `useGetTickersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTickersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTickersQuery({
+ *   variables: {
+ *      stocks: // value for 'stocks'
+ *   },
+ * });
+ */
+export function useGetTickersQuery(
+  baseOptions?: Apollo.QueryHookOptions<
+    GetTickersQuery,
+    GetTickersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<GetTickersQuery, GetTickersQueryVariables>(
+    GetTickersDocument,
+    options
+  );
+}
+export function useGetTickersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<
+    GetTickersQuery,
+    GetTickersQueryVariables
+  >
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<GetTickersQuery, GetTickersQueryVariables>(
+    GetTickersDocument,
+    options
+  );
+}
+export type GetTickersQueryHookResult = ReturnType<typeof useGetTickersQuery>;
+export type GetTickersLazyQueryHookResult = ReturnType<
+  typeof useGetTickersLazyQuery
+>;
+export type GetTickersQueryResult = Apollo.QueryResult<
+  GetTickersQuery,
+  GetTickersQueryVariables
 >;
 export const StocksSummaryDocument = gql`
   query stocksSummary($stocks: [String!]) {

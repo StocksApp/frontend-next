@@ -22,6 +22,7 @@ import { FiChevronDown } from 'react-icons/fi';
 import { NavOption } from '../../utils/interfaces';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { landingPageUrl } from '../../config/urls';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
@@ -30,7 +31,7 @@ export type HeaderProps = FlexProps & {
 
 const Header = ({ onOpen, tabs, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { pathname } = useRouter();
+  const { pathname, push } = useRouter();
   return (
     <Flex
       px={4}
@@ -95,7 +96,14 @@ const Header = ({ onOpen, tabs, ...props }: HeaderProps) => {
             </HStack>
           </MenuButton>
           <MenuList bg="white" borderColor="gray.200">
-            <MenuItem>Sign out</MenuItem>
+            <MenuItem
+              onClick={() => {
+                localStorage.removeItem('userLoggedIn');
+                push(landingPageUrl);
+              }}
+            >
+              Sign out
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>

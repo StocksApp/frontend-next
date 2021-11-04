@@ -1,0 +1,12 @@
+query getMarkingsForTicker($stock: String!, $ticker: String!) {
+  getMarkings(stock: $stock, ticker: $ticker) {
+    date
+    marking {
+      open
+      low
+      high
+      close
+      volume
+    }
+  }
+}

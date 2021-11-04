@@ -4,4 +4,5 @@ export const singleplayerPageUrl = '/game/single';
 export const multiplayerPageUrl = '/game/multiplayer';
 export const browsePageUrl = '/game';
 export const stocksPageUrl = '/stocks';
+export const technicalAnalysisUrl = '/stocks/analysis';
 export const landingPageUrl = '/';

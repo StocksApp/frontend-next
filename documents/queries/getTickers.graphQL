@@ -1,7 +1,0 @@
-query getTickers {
-  stocksSummary {
-    securities {
-      ticker
-    }
-  }
-}

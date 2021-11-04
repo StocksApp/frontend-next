@@ -39,6 +39,7 @@ const Login: NextPage = () => {
 
   useEffect(() => {
     if (data?.signIn) {
+      localStorage.setItem('userLoggedIn', 'true');
       push(browsePageUrl);
     } else if (data?.signIn === false) {
       toast({ description: 'Niepoprawne dane logowania' });
