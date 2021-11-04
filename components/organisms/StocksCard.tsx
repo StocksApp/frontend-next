@@ -34,7 +34,7 @@ type SearchbarFormValues = {
 };
 
 const StocksCard = () => {
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, getValues } = useForm();
   const { data: markets } = useGetMarketsQuery();
   const [getTickers, { data: tickers }] = useGetTickersLazyQuery();
 
@@ -106,6 +106,7 @@ const StocksCard = () => {
                             pathname: technicalAnalysisUrl,
                             query: {
                               ticker: ticker.ticker,
+                              market: getValues('market'),
                             },
                           }}
                         >

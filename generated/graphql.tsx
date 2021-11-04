@@ -18,7 +18,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  LocalDate: any;
+  LocalDate: string;
 };
 
 export type Marking = {
@@ -119,13 +119,15 @@ export type GetMarketsQuery = {
 export type GetMarkingsForTickerQueryVariables = Exact<{
   stock: Scalars['String'];
   ticker: Scalars['String'];
+  endDate?: Maybe<Scalars['LocalDate']>;
+  startDate?: Maybe<Scalars['LocalDate']>;
 }>;
 
 export type GetMarkingsForTickerQuery = {
   __typename?: 'Query';
   getMarkings: Array<{
     __typename?: 'MarkingAtDay';
-    date: any;
+    date: string;
     marking: {
       __typename?: 'Marking';
       open: number;
@@ -159,8 +161,8 @@ export type StocksSummaryQuery = {
   stocksSummary: Array<{
     __typename?: 'StockSummary';
     name: string;
-    startDate: any;
-    endDate: any;
+    startDate: string;
+    endDate: string;
   }>;
 };
 
@@ -317,8 +319,18 @@ export type GetMarketsQueryResult = Apollo.QueryResult<
   GetMarketsQueryVariables
 >;
 export const GetMarkingsForTickerDocument = gql`
-  query getMarkingsForTicker($stock: String!, $ticker: String!) {
-    getMarkings(stock: $stock, ticker: $ticker) {
+  query getMarkingsForTicker(
+    $stock: String!
+    $ticker: String!
+    $endDate: LocalDate
+    $startDate: LocalDate
+  ) {
+    getMarkings(
+      stock: $stock
+      ticker: $ticker
+      startDate: $startDate
+      endDate: $endDate
+    ) {
       date
       marking {
         open
@@ -345,6 +357,8 @@ export const GetMarkingsForTickerDocument = gql`
  *   variables: {
  *      stock: // value for 'stock'
  *      ticker: // value for 'ticker'
+ *      endDate: // value for 'endDate'
+ *      startDate: // value for 'startDate'
  *   },
  * });
  */
