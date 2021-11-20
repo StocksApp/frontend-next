@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import { landingPageUrl } from '../../config/urls';
 
 export type SidebarLayoutProps = {
-  tabs?: NavOption[];
   children: ReactNode;
 };
 

@@ -49,7 +49,7 @@ const MultiPlayer: NextPage = () => {
     push(browsePageUrl);
   };
   return (
-    <SidebarLayout tabs={gameMenuLinks}>
+    <SidebarLayout>
       <Card h="full">
         <VStack h="full" w="full" alignContent="center" justifyContent="center">
           <form onSubmit={handleSubmit(onSubmit)}>

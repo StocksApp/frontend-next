@@ -20,7 +20,7 @@ const Game: NextPage = () => {
   const { data } = useListJoinableGamesQuery();
   const { changeGame } = useCurrentGameContext();
   return (
-    <SidebarLayout tabs={gameMenuLinks}>
+    <SidebarLayout>
       <Card h="full">
         <Table variant="simple">
           <TableCaption>Uproszczony widok aktywnych gier</TableCaption>

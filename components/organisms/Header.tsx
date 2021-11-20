@@ -11,10 +11,6 @@ import {
   MenuList,
   MenuItem,
   Box,
-  TabList,
-  TabPanels,
-  Tab,
-  Tabs,
   Spacer,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
@@ -32,7 +28,7 @@ export type HeaderProps = FlexProps & {
 
 const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { pathname, push } = useRouter();
+  const { push } = useRouter();
   return (
     <Flex
       px={4}
