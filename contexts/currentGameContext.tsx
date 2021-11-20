@@ -29,7 +29,6 @@ export const CurrentGameContextProvider = ({
   const [gameId, setGameId] = useState<number | null>(null);
 
   const refresh = useCallback((gameId: number) => {
-    const localStorageValue = localStorage.setItem(currentGameKey, `${gameId}`);
     setGameId(gameId);
   }, []);
 

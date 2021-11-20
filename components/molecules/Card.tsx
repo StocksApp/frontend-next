@@ -7,7 +7,7 @@ const Card = (props: ComponentPropsWithoutRef<typeof VStack>) => {
       bg="white"
       px="14"
       py="12"
-      boxShadow="0px 7px 23px #f0c000aa"
+      boxShadow="0px 7px 23px #444444aa"
       borderRadius="16"
       {...props}
     ></VStack>

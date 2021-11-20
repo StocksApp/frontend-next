@@ -9,7 +9,6 @@ import {
   useToast,
   Box,
   Link,
-  Flex,
   VStack,
   ModalOverlay,
   ModalHeader,
@@ -17,6 +16,7 @@ import {
   ModalContent,
   ModalCloseButton,
   ModalBody,
+  HStack,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -48,7 +48,8 @@ const Login: NextPage = () => {
     }
   };
   return (
-    <Flex h="100vh" direction="column">
+    <>
+      <FloatingHeader />
       <Modal isOpen={!!data} onClose={() => push(loginPageUrl)}>
         <ModalOverlay />
         <ModalContent>
@@ -62,39 +63,53 @@ const Login: NextPage = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      <FloatingHeader />
-      <Box zIndex={-1}>
-        <Image src="/static/homik.jpg" layout="fill" alt="Hamsterdam" />
-      </Box>
-      <Center flexGrow={1} boxSizing="content-box">
-        <Card>
-          <Heading>Zarejestruj się</Heading>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <VStack spacing={3}>
-              <Text>Login</Text>
-              <Input {...register('login', { required: true })} />
-              <Text>Email</Text>
-              <Input type="email" {...register('email', { required: true })} />
-              <Text>Hasło</Text>
-              <Input
-                type="password"
-                {...register('password', { required: true })}
-              />
-              <Button type="submit" isLoading={loading}>
-                Zarejestruj
-              </Button>
-            </VStack>
-          </form>
+      <HStack pt={8}>
+        <Center flexGrow={1}>
+          <Card minW="520px">
+            <VStack align="left" spacing={8}>
+              <Heading textAlign="center">Zarejestruj się</Heading>
+              <Box w="full">
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <VStack spacing={3}>
+                    <Text>Login</Text>
+                    <Input {...register('login', { required: true })} />
+                    <Text>Email</Text>
+                    <Input
+                      type="email"
+                      {...register('email', { required: true })}
+                    />
+                    <Text>Hasło</Text>
+                    <Input
+                      type="password"
+                      {...register('password', { required: true })}
+                    />
+                    <Button type="submit" isLoading={loading}>
+                      Zarejestruj
+                    </Button>
+                  </VStack>
+                </form>
+              </Box>
 
-          <Text>
-            Jeśli masz konto to się{' '}
-            <NextLink href={loginPageUrl}>
-              <Link color="teal.300">zaloguj</Link>
-            </NextLink>
-          </Text>
-        </Card>
-      </Center>
-    </Flex>
+              <Text>
+                Jeśli masz konto to się{' '}
+                <NextLink href={loginPageUrl}>
+                  <Link color="teal.300">zaloguj</Link>
+                </NextLink>
+              </Text>
+            </VStack>
+          </Card>
+        </Center>
+        <Box w="50vw">
+          <Image
+            src="/static/padlock.svg"
+            width="500px"
+            height="400px"
+            layout="responsive"
+            alt="logo"
+          />
+        </Box>
+      </HStack>
+    </>
   );
 };
 

@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
 import { browsePageUrl } from '../config/urls';
+import { Card } from '../components/molecules';
 
 type LoginFormValues = {
   email: string;
@@ -48,28 +49,34 @@ const Login: NextPage = () => {
   return (
     <>
       <FloatingHeader />
-      <HStack paddingTop="40">
+      <HStack pt={8}>
         <Center flexGrow={1}>
-          <VStack align="left">
-            <Heading>Miło Cię znowu widzieć</Heading>
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <Text>Email</Text>
-              <Input type="email" {...register('email', { required: true })} />
-              <Text>Hasło</Text>
-              <Input
-                type="password"
-                {...register('password', { required: true })}
-              />
-              <Button type="submit" isLoading={loading}>
-                Zaloguj
-              </Button>
-            </form>
-            <Text>Podaj swój login i hasło</Text>
-          </VStack>
+          <Card>
+            <VStack align="left" spacing={8}>
+              <Heading>Miło Cię znowu widzieć</Heading>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <VStack spacing={4}>
+                  <Text>Email</Text>
+                  <Input
+                    type="email"
+                    {...register('email', { required: true })}
+                  />
+                  <Text>Hasło</Text>
+                  <Input
+                    type="password"
+                    {...register('password', { required: true })}
+                  />
+                  <Button type="submit" isLoading={loading}>
+                    Zaloguj
+                  </Button>
+                </VStack>
+              </form>
+            </VStack>
+          </Card>
         </Center>
         <Box w="50vw">
           <Image
-            src="/static/loginLogo.jpeg"
+            src="/static/user-login.svg"
             width="500px"
             height="400px"
             layout="responsive"
