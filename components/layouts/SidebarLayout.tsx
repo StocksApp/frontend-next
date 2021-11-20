@@ -1,5 +1,5 @@
 import React, { ReactNode, useState, useEffect } from 'react';
-import { Grid, useBreakpointValue, Spinner, Box } from '@chakra-ui/react';
+import { Grid, useBreakpointValue, Spinner, Box, Accordion, AccordionIcon, AccordionPanel, AccordionItem, AccordionButton } from '@chakra-ui/react';
 import Sidebar from '../organisms/Sidebar';
 import { NavOption } from '../../utils/interfaces';
 import NavLinkItem from '../molecules/NavLinkItem';
@@ -13,7 +13,7 @@ export type SidebarLayoutProps = {
   children: ReactNode;
 };
 
-const SidebarLayout = ({ tabs, children }: SidebarLayoutProps) => {
+const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const [open, setOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const { push } = useRouter();
@@ -51,18 +51,38 @@ const SidebarLayout = ({ tabs, children }: SidebarLayoutProps) => {
       </Grid>
     );
   }
+
   return (
     <Grid h="100vh" w="100vw" bg="cyan.50" {...gridSettings}>
       <Sidebar isOpen={open} onClose={() => setOpen(false)} gridArea="menu">
         <Sidebar.Body>
-          {sidebarMenuLinks.map((link, index) => (
-            <NavLinkItem key={`option_${index}`} href={link.href}>
-              {link.text}
-            </NavLinkItem>
-          ))}
+          <Accordion w='full' allowToggle>
+            {Object.keys(sidebarMenuLinks).map((key, index) => {
+              const link = sidebarMenuLinks[key];
+              return (
+              <AccordionItem key={index}>
+                <h2>
+                  <AccordionButton>
+                    <Box flex={1} textAlign='left'>
+                      {link.name}
+                    </Box>
+                    <AccordionIcon />
+                  </AccordionButton>
+                </h2>
+                <AccordionPanel>
+                  {link.links.map((subLink, index) => (
+                    <NavLinkItem href={subLink.href} key={index}>
+                      {subLink.name}
+                    </NavLinkItem>
+                  ))}
+                </AccordionPanel>
+              </AccordionItem>
+              )
+            })}
+          </Accordion>
         </Sidebar.Body>
       </Sidebar>
-      <Header onOpen={() => setOpen(true)} gridArea="header" tabs={tabs} />
+      <Header onOpen={() => setOpen(true)} gridArea="header" />
       <Box p={4} gridArea="content" alignSelf="stretch" justifySelf="stretch">
         {children}
       </Box>
