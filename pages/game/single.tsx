@@ -1,6 +1,5 @@
 import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
-import { gameMenuLinks } from '../../utils/links';
 import { Card } from '../../components/molecules';
 import { useForm } from 'react-hook-form';
 import {
@@ -27,7 +26,7 @@ const SinglePlayer: NextPage = () => {
   const { handleSubmit, register } = useForm<SinglePlayerFormValues>();
   const { push } = useRouter();
 
-  const [createSingleGame, { loading }] = useCreateSingleplayerGameMutation();
+  const [createSingleGame, { loading }] = useCreateSinglePlayerGameMutation();
 
   const onSubmit = async (values: SinglePlayerFormValues) => {
     try {

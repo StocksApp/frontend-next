@@ -1,7 +1,6 @@
 import React, { ReactNode, useState, useEffect } from 'react';
 import { Grid, useBreakpointValue, Spinner, Box, Accordion, AccordionIcon, AccordionPanel, AccordionItem, AccordionButton } from '@chakra-ui/react';
 import Sidebar from '../organisms/Sidebar';
-import { NavOption } from '../../utils/interfaces';
 import NavLinkItem from '../molecules/NavLinkItem';
 import Header from '../organisms/Header';
 import { sidebarMenuLinks } from '../../utils/links';

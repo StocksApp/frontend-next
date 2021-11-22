@@ -15,8 +15,6 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { FiChevronDown } from 'react-icons/fi';
-import { NavOption } from '../../utils/interfaces';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { landingPageUrl } from '../../config/urls';
 import { NavLinkItem } from '../molecules';

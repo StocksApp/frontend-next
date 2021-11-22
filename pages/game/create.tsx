@@ -1,60 +1,60 @@
 import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
-import {
-  useCreateMultiplayerGameMutation,
-  ListJoinableGamesDocument,
-} from '../../generated/graphql';
 import { Card } from '../../components/molecules';
 import { useForm } from 'react-hook-form';
 import {
   VStack,
   SimpleGrid,
-  Text,
   Input,
+  Button,
+  Text,
   Select,
   Flex,
-  Button,
-  Checkbox,
+  FormControl,
+  FormLabel,
 } from '@chakra-ui/react';
+import { useCreateSingleplayerGameMutation } from '../../generated/graphql';
 import { useRouter } from 'next/router';
 import { browsePageUrl } from '../../config/urls';
 
-type MultiPlayerFormValues = {
+type SinglePlayerFormValues = {
   from: string;
   to: string;
   initialWallet: string;
   turnDuration: string;
-  private: boolean;
 };
 
-const MultiPlayer: NextPage = () => {
-  const { handleSubmit, register } = useForm<MultiPlayerFormValues>();
+const SinglePlayer: NextPage = () => {
+  const { handleSubmit, register, formState: { errors, isSubmitting } } = useForm<SinglePlayerFormValues>();
   const { push } = useRouter();
 
-  const [createMultiplayerGame, { loading }] = useCreateMultiplayerGameMutation(
-    {
-      refetchQueries: [{ query: ListJoinableGamesDocument }],
-    }
-  );
+  const [createSingleGame, { loading }] = useCreateSingleplayerGameMutation();
 
-  const onSubmit = async (values: MultiPlayerFormValues) => {
-    await createMultiplayerGame({
-      variables: {
-        ...values,
-        initialWallet: parseInt(values.initialWallet, 10),
-        turnDuration: parseInt(values.turnDuration, 10),
-      },
-    });
-    push(browsePageUrl);
+  const onSubmit = async (values: SinglePlayerFormValues) => {
+    try {
+      await createSingleGame({
+        variables: {
+          ...values,
+          initialWallet: parseInt(values.initialWallet, 10),
+          turnDuration: parseInt(values.turnDuration, 10),
+        },
+      });
+      push(browsePageUrl);
+    } catch (e) {
+      console.log(e);
+    }
   };
+
   return (
     <SidebarLayout>
       <Card h="full">
         <VStack h="full" w="full" alignContent="center" justifyContent="center">
           <form onSubmit={handleSubmit(onSubmit)}>
             <SimpleGrid gridGap={2} columns={{ base: 1, sm: 2 }}>
-              <Text>Data rozpoczęcia</Text>
-              <Input type="date" {...register('from', { required: true })} />
+              <FormControl isInvalid={!!errors.from}>
+                <FormLabel htmlFor='from'>Data rozpoczęcia</FormLabel>
+                <Input type="date" {...register('from', { required: true })} />
+              </FormControl>
               <Text>Data zakończenia</Text>
               <Input type="date" {...register('to', { required: true })} />
               <Text>Początkowa wartość portfela</Text>
@@ -72,8 +72,6 @@ const MultiPlayer: NextPage = () => {
                     </option>
                   ))}
               </Select>
-              <Text>Prywatna rozgrywka</Text>
-              <Checkbox {...register('private')} justifySelf="center" />
             </SimpleGrid>
             <Flex p={6} justifyContent="center">
               <Button type="submit" isLoading={loading} px={20} py={2}>
@@ -87,4 +85,4 @@ const MultiPlayer: NextPage = () => {
   );
 };
 
-export default MultiPlayer;
+export default SinglePlayer;

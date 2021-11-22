@@ -1,4 +1,4 @@
-mutation createSingleplayerGame(
+mutation createSinglePlayerGame(
   $from: LocalDate!
   $initialWallet: Int!
   $to: LocalDate!
