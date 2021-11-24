@@ -1,5 +1,15 @@
 import React, { ReactNode, useState, useEffect } from 'react';
-import { Grid, useBreakpointValue, Spinner, Box, Accordion, AccordionIcon, AccordionPanel, AccordionItem, AccordionButton } from '@chakra-ui/react';
+import {
+  Grid,
+  useBreakpointValue,
+  Spinner,
+  Box,
+  Accordion,
+  AccordionIcon,
+  AccordionPanel,
+  AccordionItem,
+  AccordionButton,
+} from '@chakra-ui/react';
 import Sidebar from '../organisms/Sidebar';
 import NavLinkItem from '../molecules/NavLinkItem';
 import Header from '../organisms/Header';
@@ -54,28 +64,28 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
     <Grid h="100vh" w="100vw" bg="cyan.50" {...gridSettings}>
       <Sidebar isOpen={open} onClose={() => setOpen(false)} gridArea="menu">
         <Sidebar.Body>
-          <Accordion w='full' allowToggle>
+          <Accordion w="full" allowToggle>
             {Object.keys(sidebarMenuLinks).map((key, index) => {
               const link = sidebarMenuLinks[key];
               return (
-              <AccordionItem key={index}>
-                <h2>
-                  <AccordionButton>
-                    <Box flex={1} textAlign='left'>
-                      {link.name}
-                    </Box>
-                    <AccordionIcon />
-                  </AccordionButton>
-                </h2>
-                <AccordionPanel>
-                  {link.links.map((subLink, index) => (
-                    <NavLinkItem href={subLink.href} key={index}>
-                      {subLink.name}
-                    </NavLinkItem>
-                  ))}
-                </AccordionPanel>
-              </AccordionItem>
-              )
+                <AccordionItem key={index}>
+                  <h2>
+                    <AccordionButton>
+                      <Box flex={1} textAlign="left">
+                        {link.name}
+                      </Box>
+                      <AccordionIcon />
+                    </AccordionButton>
+                  </h2>
+                  <AccordionPanel>
+                    {link.links.map((subLink, index) => (
+                      <NavLinkItem href={subLink.href} key={index}>
+                        {subLink.name}
+                      </NavLinkItem>
+                    ))}
+                  </AccordionPanel>
+                </AccordionItem>
+              );
             })}
           </Accordion>
         </Sidebar.Body>

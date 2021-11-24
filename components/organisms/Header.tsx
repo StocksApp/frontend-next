@@ -52,10 +52,8 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
         </>
       )}
       <Spacer />
-      <Box flex='0'>
-        <NavLinkItem href={links.stocks.browse}>
-          Notowania
-        </NavLinkItem>
+      <Box flex="0">
+        <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
       </Box>
       <Flex alignItems={'center'}>
         <Menu>
