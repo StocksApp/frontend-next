@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 import {
   SimpleGrid,
@@ -11,6 +11,8 @@ import {
   FormLabel,
   FormErrorMessage,
   GridItem,
+  Checkbox,
+  Box,
 } from '@chakra-ui/react';
 import {
   AutoComplete,
@@ -25,38 +27,48 @@ import { useCreateSinglePlayerGameMutation } from '../../generated/graphql';
 import { browsePageUrl } from '../../config/urls';
 import { formatISO } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
+import UsersTable from '../molecules/UsersTable';
+import { User } from '../../utils/interfaces';
 
-type SinglePlayerFormValues = {
+type CreateGameFormValues = {
   from: string;
   to: string;
   initialWallet: string;
   turnDuration: string;
   markets: string[];
+  private?: boolean;
+  invitedPlayers?: string[];
 };
 
-const CreateSinglePlayerGameForm = () => {
+export type CreateGameFormType = {
+  single: boolean;
+};
+
+const CreateGameForm = ({ single }: CreateGameFormType) => {
   const {
     handleSubmit,
     register,
     watch,
     formState: { errors },
     control,
-  } = useForm<SinglePlayerFormValues>();
+  } = useForm<CreateGameFormValues>();
   const { push } = useRouter();
 
   const [createSingleGame, { loading }] = useCreateSinglePlayerGameMutation();
+  const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
   const fromDate = watch('from');
 
-  const onSubmit = async (values: SinglePlayerFormValues) => {
+  const onSubmit = async (values: CreateGameFormValues) => {
     try {
-      await createSingleGame({
-        variables: {
-          ...values,
-          initialWallet: parseInt(values.initialWallet, 10),
-          turnDuration: parseInt(values.turnDuration, 10),
-        },
-      });
-      push(browsePageUrl);
+      console.log(values);
+      // await createSingleGame({
+      //   variables: {
+      //     ...values,
+      //     initialWallet: parseInt(values.initialWallet, 10),
+      //     turnDuration: parseInt(values.turnDuration, 10),
+      //   },
+      // });
+      // push(browsePageUrl);
     } catch (e) {
       console.log(e);
     }
@@ -188,6 +200,32 @@ const CreateSinglePlayerGameForm = () => {
             )}
           />
         </GridItem>
+        {!single && (
+          <>
+            <GridItem colSpan={2}>
+              <FormControl display="grid" gridTemplateColumns="1fr 1fr">
+                <FormLabel alignSelf="baseline" m={0}>
+                  Gra prywatna
+                </FormLabel>
+                <Checkbox {...register('private')} justifySelf="center" />
+                <FormErrorMessage>{errors.private?.message}</FormErrorMessage>
+              </FormControl>
+            </GridItem>
+            <GridItem colSpan={2}>
+              <UsersTable
+                title="Zaproszeni użytkownicy"
+                users={invitedUsers}
+                onAdd={() => console.log('Todo')}
+                onDelete={(userId: string) =>
+                  setInvitedUsers((users) =>
+                    users.filter((user) => user.id !== userId)
+                  )
+                }
+                onClear={() => setInvitedUsers([])}
+              />
+            </GridItem>
+          </>
+        )}
       </SimpleGrid>
       <Flex p={6} pb={0} justifyContent="center">
         <Button type="submit" isLoading={loading} px={20} py={2}>
@@ -198,4 +236,4 @@ const CreateSinglePlayerGameForm = () => {
   );
 };
 
-export default CreateSinglePlayerGameForm;
+export default CreateGameForm;

@@ -4,29 +4,30 @@ export const links = {
   game: {
     base: '/game',
     browse: '/game',
+    overview: (id: string) => `/game/${id}`,
     create: '/game/create',
     join: '/game/join',
+    transactions: {
+      create: (id: string) => `/game/${id}/transaction/create`,
+      browse: (id: string) => `/game/${id}/transaction`,
+      history: (id: string) => `/game/${id}/transaction/history`,
+      base: (id: string) => `/game/${id}/transaction`,
+    },
+    wallet: {
+      overview: (id: string) => `/game/${id}/wallet`,
+      analysis: (id: string) => `/game/${id}/wallet/overwiev`,
+      base: (id: string) => `/game/${id}/wallet`,
+    },
+    strategies: {
+      base: (id: string) => `/game/${id}/strategies`,
+      overview: (id: string) => `/game/${id}/strategies`,
+      offenses: (id: string) => `/game/${id}/strategies/offenses`,
+    },
   },
   stocks: {
     base: '/stocks',
     browse: '/stocks',
     analysis: '/stocks/analysis',
-  },
-  transactions: {
-    create: '/transaction/create',
-    browse: '/transaction',
-    history: '/transaction/history',
-    base: '/transaction',
-  },
-  wallet: {
-    overview: '/transaction/create',
-    analysis: '/transaction',
-    base: '/transaction',
-  },
-  strategies: {
-    base: 'strategies',
-    overview: 'strategies',
-    offenses: 'strategies/offenses',
   },
   user: {
     overwiev: 'user',
@@ -38,12 +39,12 @@ export const sidebarMenuLinks: Record<
   string,
   {
     name: string;
-    href: string;
+    href: string | ((id: string) => string);
     links: NavOption[];
   }
 > = {
   game: {
-    name: 'gra',
+    name: 'Gra',
     href: links.game.base,
     links: [
       {
@@ -58,47 +59,47 @@ export const sidebarMenuLinks: Record<
   },
   transactions: {
     name: 'Transakcje',
-    href: links.transactions.base,
+    href: links.game.transactions.base,
     links: [
       {
         name: 'Stwórz',
-        href: links.transactions.create,
+        href: links.game.transactions.create,
       },
       {
         name: 'Aktywne',
-        href: links.transactions.browse,
+        href: links.game.transactions.browse,
       },
       {
         name: 'Historia',
-        href: links.transactions.history,
+        href: links.game.transactions.history,
       },
     ],
   },
   wallet: {
     name: 'Portfel',
-    href: links.wallet.base,
+    href: links.game.wallet.base,
     links: [
       {
         name: 'Przeglądaj',
-        href: links.wallet.overview,
+        href: links.game.wallet.overview,
       },
       {
         name: 'Analiza',
-        href: links.wallet.analysis,
+        href: links.game.wallet.analysis,
       },
     ],
   },
   strategies: {
     name: 'Strategie',
-    href: links.strategies.base,
+    href: links.game.strategies.base,
     links: [
       {
         name: 'Przeglądaj',
-        href: links.strategies.overview,
+        href: links.game.strategies.overview,
       },
       {
         name: 'Wykroczenia',
-        href: links.strategies.offenses,
+        href: links.game.strategies.offenses,
       },
     ],
   },

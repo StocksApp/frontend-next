@@ -25,6 +25,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const [open, setOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const { push } = useRouter();
+  const currentGame = null;
   const gridSettings = useBreakpointValue({
     base: {
       templateAreas: `'header' 'content'`,
@@ -67,6 +68,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
           <Accordion w="full" allowToggle>
             {Object.keys(sidebarMenuLinks).map((key, index) => {
               const link = sidebarMenuLinks[key];
+              if (!currentGame && typeof link.href === 'function') return null;
               return (
                 <AccordionItem key={index}>
                   <h2>
@@ -78,11 +80,23 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
                     </AccordionButton>
                   </h2>
                   <AccordionPanel>
-                    {link.links.map((subLink, index) => (
-                      <NavLinkItem href={subLink.href} key={index}>
-                        {subLink.name}
-                      </NavLinkItem>
-                    ))}
+                    {link.links
+                      .filter(
+                        (sublink) =>
+                          currentGame || typeof sublink.href !== 'function'
+                      )
+                      .map((subLink, index) => (
+                        <NavLinkItem
+                          href={
+                            typeof subLink.href === 'function'
+                              ? subLink.href(currentGame)
+                              : subLink.href
+                          }
+                          key={index}
+                        >
+                          {subLink.name}
+                        </NavLinkItem>
+                      ))}
                   </AccordionPanel>
                 </AccordionItem>
               );

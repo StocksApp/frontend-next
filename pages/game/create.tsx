@@ -4,8 +4,7 @@ import { Card } from '../../components/molecules';
 import { VStack, Text, Heading, HStack } from '@chakra-ui/react';
 import { BsPersonFill, BsPeopleFill } from 'react-icons/bs';
 import { useState } from 'react';
-import CreateSinglePlayerGameForm from '../../components/organisms/CreateSinglePlayerGameForm';
-import CreateMultiPlayerGameForm from '../../components/organisms/CreateMultiPlayerGameForm';
+import CreateGameForm from '../../components/organisms/CreateGameForm';
 
 enum CreatedGameType {
   MULTI,
@@ -63,11 +62,9 @@ const SinglePlayer: NextPage = () => {
 
           {createdGameType !== undefined && (
             <Card>
-              {createdGameType === CreatedGameType.SINGLE ? (
-                <CreateSinglePlayerGameForm />
-              ) : (
-                <CreateMultiPlayerGameForm />
-              )}
+              <CreateGameForm
+                single={createdGameType === CreatedGameType.SINGLE}
+              />
             </Card>
           )}
         </VStack>
