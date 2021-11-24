@@ -124,14 +124,14 @@ export type CreateMultiplayerGameMutation = {
   createGame: number;
 };
 
-export type CreateSingleplayerGameMutationVariables = Exact<{
+export type CreateSinglePlayerGameMutationVariables = Exact<{
   from: Scalars['LocalDate'];
   initialWallet: Scalars['Int'];
   to: Scalars['LocalDate'];
   turnDuration: Scalars['Int'];
 }>;
 
-export type CreateSingleplayerGameMutation = {
+export type CreateSinglePlayerGameMutation = {
   __typename?: 'Mutation';
   createGame: number;
 };
@@ -293,8 +293,8 @@ export type CreateMultiplayerGameMutationOptions = Apollo.BaseMutationOptions<
   CreateMultiplayerGameMutation,
   CreateMultiplayerGameMutationVariables
 >;
-export const CreateSingleplayerGameDocument = gql`
-  mutation createSingleplayerGame(
+export const CreateSinglePlayerGameDocument = gql`
+  mutation createSinglePlayerGame(
     $from: LocalDate!
     $initialWallet: Int!
     $to: LocalDate!
@@ -309,23 +309,23 @@ export const CreateSingleplayerGameDocument = gql`
     )
   }
 `;
-export type CreateSingleplayerGameMutationFn = Apollo.MutationFunction<
-  CreateSingleplayerGameMutation,
-  CreateSingleplayerGameMutationVariables
+export type CreateSinglePlayerGameMutationFn = Apollo.MutationFunction<
+  CreateSinglePlayerGameMutation,
+  CreateSinglePlayerGameMutationVariables
 >;
 
 /**
- * __useCreateSingleplayerGameMutation__
+ * __useCreateSinglePlayerGameMutation__
  *
- * To run a mutation, you first call `useCreateSingleplayerGameMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSingleplayerGameMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useCreateSinglePlayerGameMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSinglePlayerGameMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [createSingleplayerGameMutation, { data, loading, error }] = useCreateSingleplayerGameMutation({
+ * const [createSinglePlayerGameMutation, { data, loading, error }] = useCreateSinglePlayerGameMutation({
  *   variables: {
  *      from: // value for 'from'
  *      initialWallet: // value for 'initialWallet'
@@ -334,26 +334,26 @@ export type CreateSingleplayerGameMutationFn = Apollo.MutationFunction<
  *   },
  * });
  */
-export function useCreateSingleplayerGameMutation(
+export function useCreateSinglePlayerGameMutation(
   baseOptions?: Apollo.MutationHookOptions<
-    CreateSingleplayerGameMutation,
-    CreateSingleplayerGameMutationVariables
+    CreateSinglePlayerGameMutation,
+    CreateSinglePlayerGameMutationVariables
   >
 ) {
   const options = { ...defaultOptions, ...baseOptions };
   return Apollo.useMutation<
-    CreateSingleplayerGameMutation,
-    CreateSingleplayerGameMutationVariables
-  >(CreateSingleplayerGameDocument, options);
+    CreateSinglePlayerGameMutation,
+    CreateSinglePlayerGameMutationVariables
+  >(CreateSinglePlayerGameDocument, options);
 }
-export type CreateSingleplayerGameMutationHookResult = ReturnType<
-  typeof useCreateSingleplayerGameMutation
+export type CreateSinglePlayerGameMutationHookResult = ReturnType<
+  typeof useCreateSinglePlayerGameMutation
 >;
-export type CreateSingleplayerGameMutationResult =
-  Apollo.MutationResult<CreateSingleplayerGameMutation>;
-export type CreateSingleplayerGameMutationOptions = Apollo.BaseMutationOptions<
-  CreateSingleplayerGameMutation,
-  CreateSingleplayerGameMutationVariables
+export type CreateSinglePlayerGameMutationResult =
+  Apollo.MutationResult<CreateSinglePlayerGameMutation>;
+export type CreateSinglePlayerGameMutationOptions = Apollo.BaseMutationOptions<
+  CreateSinglePlayerGameMutation,
+  CreateSinglePlayerGameMutationVariables
 >;
 export const CreateUserDocument = gql`
   mutation createUser($name: String!, $password: String!, $email: String!) {
