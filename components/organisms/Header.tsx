@@ -11,10 +11,6 @@ import {
   MenuList,
   MenuItem,
   Box,
-  TabList,
-  TabPanels,
-  Tab,
-  Tabs,
   Spacer,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
@@ -22,15 +18,17 @@ import { FiChevronDown } from 'react-icons/fi';
 import { NavOption } from '../../utils/interfaces';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import { landingPageUrl } from '../../config/urls';
+import { NavLinkItem } from '../molecules';
+import { links } from '../../utils/links';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
-  tabs?: NavOption[];
 };
 
-const Header = ({ onOpen, tabs, ...props }: HeaderProps) => {
+const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { pathname } = useRouter();
+  const { push } = useRouter();
   return (
     <Flex
       px={4}
@@ -55,26 +53,12 @@ const Header = ({ onOpen, tabs, ...props }: HeaderProps) => {
           </Text>
         </>
       )}
-      {tabs ? (
-        <Tabs
-          index={tabs
-            .map(({ href }, index) => (pathname === href ? index : 0))
-            .reduce((prev, item) => Math.max(prev, item), 0)}
-        >
-          <TabList>
-            {tabs.map((tab, index) => (
-              <Link href={tab.href} key={index}>
-                <a>
-                  <Tab>{tab.text}</Tab>
-                </a>
-              </Link>
-            ))}
-          </TabList>
-          <TabPanels></TabPanels>
-        </Tabs>
-      ) : (
-        <Spacer />
-      )}
+      <Spacer />
+      <Box flex='0'>
+        <NavLinkItem href={links.stocks.browse}>
+          Notowania
+        </NavLinkItem>
+      </Box>
       <Flex alignItems={'center'}>
         <Menu>
           <MenuButton
@@ -95,7 +79,14 @@ const Header = ({ onOpen, tabs, ...props }: HeaderProps) => {
             </HStack>
           </MenuButton>
           <MenuList bg="white" borderColor="gray.200">
-            <MenuItem>Sign out</MenuItem>
+            <MenuItem
+              onClick={() => {
+                localStorage.removeItem('userLoggedIn');
+                push(landingPageUrl);
+              }}
+            >
+              Sign out
+            </MenuItem>
           </MenuList>
         </Menu>
       </Flex>

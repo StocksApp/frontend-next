@@ -11,7 +11,7 @@ export type MenuOptionProps = FlexProps & {
 
 const NavLinkItem = ({ icon, href, children, ...props }: MenuOptionProps) => {
   const { pathname } = useRouter();
-  const selected = pathname.includes(href);
+  const selected = pathname == href;
   return (
     <NextLink href={href}>
       <Link w="full">

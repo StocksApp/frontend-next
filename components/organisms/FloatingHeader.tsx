@@ -6,9 +6,16 @@ import {
   HStack,
   Link as ChakraLink,
   Center,
+  Heading,
+  background,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import { landingPageUrl, loginPageUrl, signUpPageUrl } from '../../config/urls';
+import {
+  loginPageUrl,
+  signUpPageUrl,
+  stocksPageUrl,
+  landingPageUrl,
+} from '../../config/urls';
 
 const FloatingHeader = () => {
   return (
@@ -18,24 +25,56 @@ const FloatingHeader = () => {
         bg="gray.50"
         border="1px solid black"
         p="6"
-        borderRadius="16"
-        boxShadow="0px 7px 23px #f0c000aa"
+        borderRadius="32"
+        boxShadow="0px 7px 23px #444444aa"
+        alignItems="center"
       >
         <Link href={landingPageUrl}>
           <a>
-            <Avatar src="/static/tracz.jpg" />
+            <Avatar />
           </a>
         </Link>
+        <Heading ml={8}>LOGO</Heading>
         <Spacer />
-        <HStack>
-          <Link href={landingPageUrl} passHref>
-            <ChakraLink>Notowania</ChakraLink>
+        <HStack spacing={8}>
+          <Link href={stocksPageUrl} passHref>
+            <ChakraLink
+              py={2}
+              px={8}
+              borderRadius={16}
+              border="1px solid #777777"
+              _hover={{
+                boxShadow: '0px 3px 14px #999999aa',
+              }}
+            >
+              Notowania
+            </ChakraLink>
           </Link>
           <Link href={loginPageUrl} passHref>
-            <ChakraLink>Zaloguj</ChakraLink>
+            <ChakraLink
+              py={2}
+              px={8}
+              borderRadius={16}
+              border="1px solid #777777"
+              _hover={{
+                boxShadow: '0px 3px 14px #999999aa',
+              }}
+            >
+              Zaloguj
+            </ChakraLink>
           </Link>
           <Link href={signUpPageUrl} passHref>
-            <ChakraLink>Zarejestruj</ChakraLink>
+            <ChakraLink
+              py={2}
+              px={8}
+              borderRadius={16}
+              border="1px solid #777777"
+              _hover={{
+                boxShadow: '0px 3px 14px #999999aa',
+              }}
+            >
+              Zarejestruj
+            </ChakraLink>
           </Link>
         </HStack>
       </Flex>

@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   Box,
   Drawer,
@@ -12,7 +12,9 @@ import {
   BoxProps,
   Flex,
   Text,
+  Select,
 } from '@chakra-ui/react';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 export type SidebarProps = {
   isOpen: boolean;
@@ -22,6 +24,8 @@ export type SidebarProps = {
 
 const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
   const isDrawer = useBreakpointValue({ base: true, md: false });
+  const { gameId } = useCurrentGameContext();
+  const [games, setGames] = useState<string[]>(['Poza rozgrywką']);
 
   return !isDrawer ? (
     <Box
@@ -37,14 +41,30 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
         </Text>
         {/* <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} /> */}
       </Flex>
+      <Box p={4}>
+        <Text>
+          Wybierz grę:
+        </Text>
+        <Select defaultValue='Poza rozgrywką'>
+          {games.map((game, index) => <option value={game} key={index}>{game}</option>)}
+        </Select>
+      </Box>
       {children}
     </Box>
   ) : (
     <Drawer isOpen={isOpen} placement="left" onClose={onClose} isFullHeight>
       <DrawerOverlay>
         <DrawerContent>
-          <DrawerHeader>Header</DrawerHeader>
+          <DrawerHeader>Logo</DrawerHeader>
           <DrawerCloseButton />
+            <Box p={4}>
+              <Text>
+                Wybierz grę:
+              </Text>
+              <Select defaultValue='Poza rozgrywką'>
+                {games.map((game, index) => <option value={game} key={index}>{game}</option>)}
+              </Select>
+          </Box>
           <DrawerBody>{children}</DrawerBody>
         </DrawerContent>
       </DrawerOverlay>

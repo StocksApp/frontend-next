@@ -1,0 +1,7 @@
+query stocksSummary($stocks: [String!]) {
+  stocksSummary(stocks: $stocks) {
+    name
+    startDate
+    endDate
+  }
+}

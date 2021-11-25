@@ -1,0 +1,1 @@
+export const currentGameKey = 'currentGameId';

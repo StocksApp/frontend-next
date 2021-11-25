@@ -9,6 +9,8 @@ generates:
     config:
       withHooks: true
       withMutationFn: true
+      scalars:
+        LocalDate: string
     generates:
   ./schema.graphql:
     plugins:

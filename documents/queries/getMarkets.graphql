@@ -1,0 +1,6 @@
+query getMarkets {
+  stocksSummary {
+    name
+    readableName
+  }
+}
