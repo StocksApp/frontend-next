@@ -1,0 +1,22 @@
+query getMarkingsForTicker(
+  $stock: String!
+  $ticker: String!
+  $endDate: LocalDate
+  $startDate: LocalDate
+) {
+  getMarkings(
+    stock: $stock
+    ticker: $ticker
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    date
+    marking {
+      open
+      low
+      high
+      close
+      volume
+    }
+  }
+}

@@ -1,0 +1,9 @@
+query listJoinableGames {
+  listJoinableGames {
+    id
+    from
+    to
+    initialWalletValue
+    turnDuration
+  }
+}
