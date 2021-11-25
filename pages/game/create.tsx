@@ -11,11 +11,10 @@ enum CreatedGameType {
   SINGLE,
 }
 
-const SinglePlayer: NextPage = () => {
+const CreateGame: NextPage = () => {
   const [createdGameType, setCreatedGameType] = useState<
     CreatedGameType | undefined
   >(undefined);
-  console.log(createdGameType);
   return (
     <SidebarLayout>
       <Card h="full">
@@ -73,4 +72,4 @@ const SinglePlayer: NextPage = () => {
   );
 };
 
-export default SinglePlayer;
+export default CreateGame;
