@@ -7,7 +7,6 @@ import {
   Link as ChakraLink,
   Center,
   Heading,
-  background,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import {

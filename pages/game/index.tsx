@@ -1,6 +1,5 @@
 import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
-import { gameMenuLinks } from '../../utils/links';
 import { Card } from '../../components/molecules';
 import {
   Table,
@@ -11,7 +10,6 @@ import {
   Td,
   Tbody,
   Button,
-  Text,
 } from '@chakra-ui/react';
 import { useListJoinableGamesQuery } from '../../generated/graphql';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
