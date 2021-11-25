@@ -16,7 +16,7 @@ import { useSignInMutation } from '../generated/graphql';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { useEffect } from 'react';
-import { browsePageUrl } from '../config/urls';
+import { links } from '../config/urls';
 import { Card } from '../components/molecules';
 
 type LoginFormValues = {
@@ -41,7 +41,7 @@ const Login: NextPage = () => {
   useEffect(() => {
     if (data?.signIn) {
       localStorage.setItem('userLoggedIn', 'true');
-      push(browsePageUrl);
+      push(links.game.browse);
     } else if (data?.signIn === false) {
       toast({ description: 'Niepoprawne dane logowania' });
     }

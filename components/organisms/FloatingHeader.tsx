@@ -9,12 +9,7 @@ import {
   Heading,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import {
-  loginPageUrl,
-  signUpPageUrl,
-  stocksPageUrl,
-  landingPageUrl,
-} from '../../config/urls';
+import { links } from '../../config/urls';
 
 const FloatingHeader = () => {
   return (
@@ -28,7 +23,7 @@ const FloatingHeader = () => {
         boxShadow="0px 7px 23px #444444aa"
         alignItems="center"
       >
-        <Link href={landingPageUrl}>
+        <Link href={links.landing}>
           <a>
             <Avatar />
           </a>
@@ -36,7 +31,7 @@ const FloatingHeader = () => {
         <Heading ml={8}>LOGO</Heading>
         <Spacer />
         <HStack spacing={8}>
-          <Link href={stocksPageUrl} passHref>
+          <Link href={links.stocks.browse} passHref>
             <ChakraLink
               py={2}
               px={8}
@@ -49,7 +44,7 @@ const FloatingHeader = () => {
               Notowania
             </ChakraLink>
           </Link>
-          <Link href={loginPageUrl} passHref>
+          <Link href={links.login} passHref>
             <ChakraLink
               py={2}
               px={8}
@@ -62,7 +57,7 @@ const FloatingHeader = () => {
               Zaloguj
             </ChakraLink>
           </Link>
-          <Link href={signUpPageUrl} passHref>
+          <Link href={links.signUp} passHref>
             <ChakraLink
               py={2}
               px={8}

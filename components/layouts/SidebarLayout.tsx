@@ -13,9 +13,8 @@ import {
 import Sidebar from '../organisms/Sidebar';
 import NavLinkItem from '../molecules/NavLinkItem';
 import Header from '../organisms/Header';
-import { sidebarMenuLinks } from '../../utils/links';
+import { sidebarMenuLinks, links } from '../../config/urls';
 import { useRouter } from 'next/router';
-import { landingPageUrl } from '../../config/urls';
 
 export type SidebarLayoutProps = {
   children: ReactNode;
@@ -40,7 +39,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
 
   useEffect(() => {
     if (!localStorage.getItem('userLoggedIn')) {
-      push(landingPageUrl);
+      push(links.landing);
     } else {
       setHasMounted(true);
     }
