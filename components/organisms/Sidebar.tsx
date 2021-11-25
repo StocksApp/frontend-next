@@ -25,7 +25,9 @@ export type SidebarProps = {
 const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
   const isDrawer = useBreakpointValue({ base: true, md: false });
   const { gameId } = useCurrentGameContext();
-  const [games, setGames] = useState<string[]>(['Poza rozgrywką']);
+  const [games, _] = useState<string[]>(
+    ['Poza rozgrywką'].concat(gameId ? [`${gameId}`] : [])
+  );
 
   return !isDrawer ? (
     <Box

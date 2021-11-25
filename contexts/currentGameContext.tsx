@@ -30,6 +30,7 @@ export const CurrentGameContextProvider = ({
 
   const refresh = useCallback((gameId: number) => {
     setGameId(gameId);
+    localStorage.setItem(currentGameKey, `${gameId}`);
   }, []);
 
   useEffect(() => {
@@ -39,7 +40,7 @@ export const CurrentGameContextProvider = ({
         ? parseInt(localStorageValue, 10)
         : localStorageValue
     );
-  }, [refresh]);
+  }, []);
 
   return (
     <CurrentGameContext.Provider
