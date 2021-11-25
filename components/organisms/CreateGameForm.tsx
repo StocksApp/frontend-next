@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 
 import {
   SimpleGrid,
@@ -28,9 +28,10 @@ import {
 } from '../../generated/graphql';
 import { formatISO, parse } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
-import UsersTable from '../molecules/UsersTable';
 import { User } from '../../utils/interfaces';
 import { links } from '../../config/urls';
+import GenericTablePanel from '../molecules/GenericTablePanel';
+import { FaTimes } from 'react-icons/fa';
 
 type CreateGameFormValues = {
   from: string;
@@ -212,17 +213,33 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
               </FormControl>
             </GridItem>
             <GridItem colSpan={2}>
-              <UsersTable
+              <GenericTablePanel
                 title="Zaproszeni użytkownicy"
-                users={invitedUsers}
-                onAdd={() => 1 + 1} // TODO inviting users
-                onDelete={(userId: string) =>
-                  setInvitedUsers((users) =>
-                    users.filter((user) => user.id !== userId)
-                  )
+                actionNodes={
+                  <>
+                    <Button onClick={() => 1 + 1}>Dodaj</Button>
+                    <Button onClick={() => setInvitedUsers([])}>Wyczyść</Button>
+                  </>
                 }
-                onClear={() => setInvitedUsers([])}
-              />
+              >
+                <GenericTablePanel.Table<[string, ReactNode]>
+                  tableHeaders={['Nazwa', 'Akcje']}
+                  tableValues={invitedUsers.map((user, index) => [
+                    user.name,
+                    <FaTimes
+                      key={index}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        setInvitedUsers((users) =>
+                          users.filter(
+                            (invitedUser) => invitedUser.id !== user.id
+                          )
+                        )
+                      }
+                    />,
+                  ])}
+                />
+              </GenericTablePanel>
             </GridItem>
           </>
         )}
