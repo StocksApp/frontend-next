@@ -49,7 +49,6 @@ const TickerChart = () => {
   });
 
   const onSubmit = (values: TickerChartFormValues) => {
-    console.log(values.from, values.to);
     refetch({
       ...tickerVariables,
       startDate: values.from,
