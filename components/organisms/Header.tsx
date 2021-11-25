@@ -15,8 +15,6 @@ import {
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { FiChevronDown } from 'react-icons/fi';
-import { NavOption } from '../../utils/interfaces';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { landingPageUrl } from '../../config/urls';
 import { NavLinkItem } from '../molecules';
@@ -54,10 +52,8 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
         </>
       )}
       <Spacer />
-      <Box flex='0'>
-        <NavLinkItem href={links.stocks.browse}>
-          Notowania
-        </NavLinkItem>
+      <Box flex="0">
+        <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
       </Box>
       <Flex alignItems={'center'}>
         <Menu>

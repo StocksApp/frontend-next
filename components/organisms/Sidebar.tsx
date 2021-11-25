@@ -42,11 +42,13 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
         {/* <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} /> */}
       </Flex>
       <Box p={4}>
-        <Text>
-          Wybierz grę:
-        </Text>
-        <Select defaultValue='Poza rozgrywką'>
-          {games.map((game, index) => <option value={game} key={index}>{game}</option>)}
+        <Text>Wybierz grę:</Text>
+        <Select defaultValue="Poza rozgrywką">
+          {games.map((game, index) => (
+            <option value={game} key={index}>
+              {game}
+            </option>
+          ))}
         </Select>
       </Box>
       {children}
@@ -57,13 +59,15 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
         <DrawerContent>
           <DrawerHeader>Logo</DrawerHeader>
           <DrawerCloseButton />
-            <Box p={4}>
-              <Text>
-                Wybierz grę:
-              </Text>
-              <Select defaultValue='Poza rozgrywką'>
-                {games.map((game, index) => <option value={game} key={index}>{game}</option>)}
-              </Select>
+          <Box p={4}>
+            <Text>Wybierz grę:</Text>
+            <Select defaultValue="Poza rozgrywką">
+              {games.map((game, index) => (
+                <option value={game} key={index}>
+                  {game}
+                </option>
+              ))}
+            </Select>
           </Box>
           <DrawerBody>{children}</DrawerBody>
         </DrawerContent>
