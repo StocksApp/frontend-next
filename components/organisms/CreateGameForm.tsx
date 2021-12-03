@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, ReactNode } from 'react';
 
 import {
   SimpleGrid,
@@ -20,14 +20,18 @@ import {
   AutoCompleteList,
   AutoCompleteTag,
 } from '@choc-ui/chakra-autocomplete';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, FieldError } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import { useCreateSinglePlayerGameMutation } from '../../generated/graphql';
-import { browsePageUrl } from '../../config/urls';
-import { formatISO } from 'date-fns';
+import {
+  useCreateSinglePlayerGameMutation,
+  useGetMarketsQuery,
+} from '../../generated/graphql';
+import { formatISO, parse } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
-import UsersTable from '../molecules/UsersTable';
 import { User } from '../../utils/interfaces';
+import { links } from '../../config/urls';
+import GenericTablePanel from '../molecules/GenericTablePanel';
+import { FaTimes } from 'react-icons/fa';
 
 type CreateGameFormValues = {
   from: string;
@@ -54,19 +58,21 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   const { push } = useRouter();
 
   const [createSingleGame, { loading }] = useCreateSinglePlayerGameMutation();
+  const { data: markets } = useGetMarketsQuery();
   const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
   const fromDate = watch('from');
 
   const onSubmit = async (values: CreateGameFormValues) => {
     try {
-      await createSingleGame({
+      const { data } = await createSingleGame({
         variables: {
           ...values,
           initialWallet: parseInt(values.initialWallet, 10),
           turnDuration: parseInt(values.turnDuration, 10),
         },
       });
-      push(browsePageUrl);
+      if (!data?.createGame) throw new Error('Game couldnt be created');
+      push(links.game.overview(`${data?.createGame}`));
     } catch (e) {
       console.log(e);
     }
@@ -81,12 +87,11 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
             type="date"
             max={formatISO(Date.now(), { representation: 'date' })}
             {...register('from', {
-              valueAsDate: true,
               deps: ['to'],
               required: { value: true, message: 'To pole jest obowiązkowe' },
               validate: (value) =>
                 validateDate(
-                  value as unknown as Date,
+                  parse(value, 'y-MM-dd', new Date()),
                   'Niepoprawny format daty'
                 ),
             })}
@@ -99,18 +104,17 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
             type="date"
             max={formatISO(Date.now(), { representation: 'date' })}
             {...register('to', {
-              valueAsDate: true,
               required: { value: true, message: 'To pole jest obowiązkowe' },
               validate: {
                 validateCorrectness: (value) =>
                   validateDate(
-                    value as unknown as Date,
+                    parse(value, 'y-MM-dd', new Date()),
                     'Niepoprawny format daty'
                   ),
                 validateOrder: (value) =>
                   validateDatesOrder(
-                    fromDate as unknown as Date,
-                    value as unknown as Date,
+                    parse(fromDate, 'y-MM-dd', new Date()),
+                    parse(value, 'y-MM-dd', new Date()),
                     'End date must be after start date'
                   ),
               },
@@ -177,27 +181,18 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
                     }
                   </AutoCompleteInput>
                   <FormErrorMessage>
-                    {errors.markets?.[0]?.message}
+                    {(errors.markets as undefined | FieldError)?.message}
                   </FormErrorMessage>
                   <AutoCompleteList>
-                    {[
-                      'testtesttest1',
-                      'testtesttest2',
-                      'testtesttest3',
-                      'testtesttest4',
-                      'testtesttest5',
-                      'testtesttest6',
-
-                      'testtest11',
-                    ].map((country, cid) => (
+                    {markets?.stocksSummary.map((stock, cid) => (
                       <AutoCompleteItem
                         key={`option-${cid}`}
-                        value={country}
+                        value={stock.name}
                         textTransform="capitalize"
                         _selected={{ bg: 'cyan.500' }}
                         _focus={{ bg: 'cyan.200' }}
                       >
-                        {country}
+                        {stock.readableName}
                       </AutoCompleteItem>
                     ))}
                   </AutoCompleteList>
@@ -218,17 +213,33 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
               </FormControl>
             </GridItem>
             <GridItem colSpan={2}>
-              <UsersTable
+              <GenericTablePanel
                 title="Zaproszeni użytkownicy"
-                users={invitedUsers}
-                onAdd={() => 1 + 1} // TODO inviting users
-                onDelete={(userId: string) =>
-                  setInvitedUsers((users) =>
-                    users.filter((user) => user.id !== userId)
-                  )
+                actionNodes={
+                  <>
+                    <Button onClick={() => 1 + 1}>Dodaj</Button>
+                    <Button onClick={() => setInvitedUsers([])}>Wyczyść</Button>
+                  </>
                 }
-                onClear={() => setInvitedUsers([])}
-              />
+              >
+                <GenericTablePanel.Table<[string, ReactNode]>
+                  tableHeaders={['Nazwa', 'Akcje']}
+                  tableValues={invitedUsers.map((user, index) => [
+                    user.name,
+                    <FaTimes
+                      key={index}
+                      style={{ cursor: 'pointer' }}
+                      onClick={() =>
+                        setInvitedUsers((users) =>
+                          users.filter(
+                            (invitedUser) => invitedUser.id !== user.id
+                          )
+                        )
+                      }
+                    />,
+                  ])}
+                />
+              </GenericTablePanel>
             </GridItem>
           </>
         )}

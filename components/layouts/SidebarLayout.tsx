@@ -13,9 +13,9 @@ import {
 import Sidebar from '../organisms/Sidebar';
 import NavLinkItem from '../molecules/NavLinkItem';
 import Header from '../organisms/Header';
-import { sidebarMenuLinks } from '../../utils/links';
+import { sidebarMenuLinks, links } from '../../config/urls';
 import { useRouter } from 'next/router';
-import { landingPageUrl } from '../../config/urls';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 export type SidebarLayoutProps = {
   children: ReactNode;
@@ -25,7 +25,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const [open, setOpen] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const { push } = useRouter();
-  const currentGame = null;
+  const { gameId: currentGame } = useCurrentGameContext();
   const gridSettings = useBreakpointValue({
     base: {
       templateAreas: `'header' 'content'`,
@@ -40,7 +40,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
 
   useEffect(() => {
     if (!localStorage.getItem('userLoggedIn')) {
-      push(landingPageUrl);
+      push(links.landing);
     } else {
       setHasMounted(true);
     }
@@ -89,7 +89,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
                         <NavLinkItem
                           href={
                             typeof subLink.href === 'function'
-                              ? subLink.href(currentGame || '')
+                              ? subLink.href(`${currentGame || ''}`)
                               : subLink.href
                           }
                           key={index}

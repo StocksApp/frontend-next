@@ -16,9 +16,8 @@ import {
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { FiChevronDown } from 'react-icons/fi';
 import { useRouter } from 'next/router';
-import { landingPageUrl } from '../../config/urls';
 import { NavLinkItem } from '../molecules';
-import { links } from '../../utils/links';
+import { links } from '../../config/urls';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
@@ -78,7 +77,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
             <MenuItem
               onClick={() => {
                 localStorage.removeItem('userLoggedIn');
-                push(landingPageUrl);
+                push(links.landing);
               }}
             >
               Sign out

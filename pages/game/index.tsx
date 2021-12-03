@@ -13,10 +13,13 @@ import {
 } from '@chakra-ui/react';
 import { useListJoinableGamesQuery } from '../../generated/graphql';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
+import { useRouter } from 'next/router';
+import { links } from '../../config/urls';
 
 const Game: NextPage = () => {
   const { data } = useListJoinableGamesQuery();
   const { changeGame } = useCurrentGameContext();
+  const { push } = useRouter();
   return (
     <SidebarLayout>
       <Card h="full">
@@ -43,6 +46,7 @@ const Game: NextPage = () => {
                     <Button
                       onClick={() => {
                         changeGame(game.id);
+                        push(links.game.overview(`${game.id}`));
                       }}
                     >
                       Dołącz do gry

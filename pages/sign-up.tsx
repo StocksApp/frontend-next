@@ -21,7 +21,7 @@ import {
 import Image from 'next/image';
 import NextLink from 'next/link';
 import Card from '../components/molecules/Card';
-import { loginPageUrl } from '../config/urls';
+import { links } from '../config/urls';
 import { useForm } from 'react-hook-form';
 import { useCreateUserMutation } from '../generated/graphql';
 import { useRouter } from 'next/router';
@@ -50,7 +50,7 @@ const Login: NextPage = () => {
   return (
     <>
       <FloatingHeader />
-      <Modal isOpen={!!data} onClose={() => push(loginPageUrl)}>
+      <Modal isOpen={!!data} onClose={() => push(links.login)}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Sukces</ModalHeader>
@@ -92,7 +92,7 @@ const Login: NextPage = () => {
 
               <Text>
                 Jeśli masz konto to się{' '}
-                <NextLink href={loginPageUrl}>
+                <NextLink href={links.login}>
                   <Link color="teal.300">zaloguj</Link>
                 </NextLink>
               </Text>

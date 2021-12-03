@@ -24,7 +24,7 @@ import {
 } from '../../generated/graphql';
 import { SearchIcon } from '@chakra-ui/icons';
 import NextLink from 'next/link';
-import { technicalAnalysisUrl } from '../../config/urls';
+import { links } from '../../config/urls';
 
 // export type StocksCardProps = {};
 
@@ -103,7 +103,7 @@ const StocksCard = () => {
                       <Td>
                         <NextLink
                           href={{
-                            pathname: technicalAnalysisUrl,
+                            pathname: links.stocks.analysis,
                             query: {
                               ticker: ticker.ticker,
                               market: getValues('market'),
