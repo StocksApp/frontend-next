@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import {
   SimpleGrid,
@@ -12,7 +12,6 @@ import {
   FormErrorMessage,
   GridItem,
   Checkbox,
-  Box,
 } from '@chakra-ui/react';
 import {
   AutoComplete,
@@ -60,15 +59,14 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
 
   const onSubmit = async (values: CreateGameFormValues) => {
     try {
-      console.log(values);
-      // await createSingleGame({
-      //   variables: {
-      //     ...values,
-      //     initialWallet: parseInt(values.initialWallet, 10),
-      //     turnDuration: parseInt(values.turnDuration, 10),
-      //   },
-      // });
-      // push(browsePageUrl);
+      await createSingleGame({
+        variables: {
+          ...values,
+          initialWallet: parseInt(values.initialWallet, 10),
+          turnDuration: parseInt(values.turnDuration, 10),
+        },
+      });
+      push(browsePageUrl);
     } catch (e) {
       console.log(e);
     }
@@ -77,7 +75,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <SimpleGrid columnGap={16} rowGap={4} columns={{ base: 1, sm: 2 }}>
-        <FormControl isInvalid={errors.from}>
+        <FormControl isInvalid={!!errors.from}>
           <FormLabel htmlFor="name">Data rozpoczęcia</FormLabel>{' '}
           <Input
             type="date"
@@ -87,12 +85,15 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
               deps: ['to'],
               required: { value: true, message: 'To pole jest obowiązkowe' },
               validate: (value) =>
-                validateDate(value, 'Niepoprawny format daty'),
+                validateDate(
+                  value as unknown as Date,
+                  'Niepoprawny format daty'
+                ),
             })}
           />
           <FormErrorMessage>{errors.from?.message}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={errors.to}>
+        <FormControl isInvalid={!!errors.to}>
           <FormLabel htmlFor="to">Data zakończenia</FormLabel>{' '}
           <Input
             type="date"
@@ -102,11 +103,14 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
               required: { value: true, message: 'To pole jest obowiązkowe' },
               validate: {
                 validateCorrectness: (value) =>
-                  validateDate(value, 'Niepoprawny format daty'),
+                  validateDate(
+                    value as unknown as Date,
+                    'Niepoprawny format daty'
+                  ),
                 validateOrder: (value) =>
                   validateDatesOrder(
-                    fromDate,
-                    value,
+                    fromDate as unknown as Date,
+                    value as unknown as Date,
                     'End date must be after start date'
                   ),
               },
@@ -114,7 +118,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
           />
           <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={errors.initialWallet}>
+        <FormControl isInvalid={!!errors.initialWallet}>
           <FormLabel htmlFor="initialWallet">
             Początkowa wartość portfela
           </FormLabel>
@@ -130,7 +134,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
           />
           <FormErrorMessage>{errors.initialWallet?.message}</FormErrorMessage>
         </FormControl>
-        <FormControl isInvalid={errors.turnDuration}>
+        <FormControl isInvalid={!!errors.turnDuration}>
           <FormLabel htmlFor="turnDuration">Czas trwania tury</FormLabel>{' '}
           <Select
             {...register('turnDuration', {
@@ -156,7 +160,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
             }}
             name="markets"
             render={({ field: { ref, ...rest } }) => (
-              <FormControl isInvalid={errors.markets}>
+              <FormControl isInvalid={!!errors.markets}>
                 <FormLabel htmlFor="markets">
                   Dostępne w rozgrywce rynki
                 </FormLabel>
@@ -172,7 +176,9 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
                       ))
                     }
                   </AutoCompleteInput>
-                  <FormErrorMessage>{errors.markets?.message}</FormErrorMessage>
+                  <FormErrorMessage>
+                    {errors.markets?.[0]?.message}
+                  </FormErrorMessage>
                   <AutoCompleteList>
                     {[
                       'testtesttest1',
@@ -215,7 +221,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
               <UsersTable
                 title="Zaproszeni użytkownicy"
                 users={invitedUsers}
-                onAdd={() => console.log('Todo')}
+                onAdd={() => 1 + 1} // TODO inviting users
                 onDelete={(userId: string) =>
                   setInvitedUsers((users) =>
                     users.filter((user) => user.id !== userId)
