@@ -1,7 +1,7 @@
 import { NavOption } from '../utils/interfaces';
 
 export const links = {
-  landing: '',
+  landing: '/',
   login: '/login',
   signUp: '/sign-up',
   game: {
