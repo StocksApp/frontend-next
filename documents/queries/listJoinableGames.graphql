@@ -1,5 +1,5 @@
-query listJoinableGames {
-  listJoinableGames {
+query getJoinableGames {
+  getJoinableGames {
     id
     from
     to

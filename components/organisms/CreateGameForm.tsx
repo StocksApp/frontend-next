@@ -23,7 +23,7 @@ import {
 import { useForm, Controller, FieldError } from 'react-hook-form';
 import { useRouter } from 'next/router';
 import {
-  useCreateSinglePlayerGameMutation,
+  useCreateGameMutation,
   useGetMarketsQuery,
 } from '../../generated/graphql';
 import { formatISO, parse } from 'date-fns';
@@ -39,7 +39,7 @@ type CreateGameFormValues = {
   initialWallet: string;
   turnDuration: string;
   markets: string[];
-  private?: boolean;
+  private: boolean;
   invitedPlayers?: string[];
 };
 
@@ -57,7 +57,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   } = useForm<CreateGameFormValues>();
   const { push } = useRouter();
 
-  const [createSingleGame, { loading }] = useCreateSinglePlayerGameMutation();
+  const [createSingleGame, { loading }] = useCreateGameMutation();
   const { data: markets } = useGetMarketsQuery();
   const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
   const fromDate = watch('from');
@@ -67,6 +67,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
       const { data } = await createSingleGame({
         variables: {
           ...values,
+          stocks: ['wse_stocks'],
           initialWallet: parseInt(values.initialWallet, 10),
           turnDuration: parseInt(values.turnDuration, 10),
         },
@@ -208,7 +209,10 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
                 <FormLabel alignSelf="baseline" m={0}>
                   Gra prywatna
                 </FormLabel>
-                <Checkbox {...register('private')} justifySelf="center" />
+                <Checkbox
+                  {...(register('private'), { required: true })}
+                  justifySelf="center"
+                />
                 <FormErrorMessage>{errors.private?.message}</FormErrorMessage>
               </FormControl>
             </GridItem>

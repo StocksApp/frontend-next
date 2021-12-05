@@ -1,15 +1,17 @@
-mutation createMultiplayerGame(
+mutation createGame(
   $from: LocalDate!
   $initialWallet: Int!
   $private: Boolean!
   $to: LocalDate!
   $turnDuration: Int!
+  $stocks: [String!]!
 ) {
   createGame(
-    from: $from
-    to: $to
-    initialWallet: $initialWallet
-    private: $private
+    startDate: $from
+    endDate: $to
+    walletValue: $initialWallet
+    isPrivate: $private
     turnDuration: $turnDuration
+    stocks: $stocks
   )
 }
