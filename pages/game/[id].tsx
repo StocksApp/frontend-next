@@ -37,4 +37,6 @@ const GameOverview = () => {
   );
 };
 
+GameOverview.auth = true;
+
 export default GameOverview;

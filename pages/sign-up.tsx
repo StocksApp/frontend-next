@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import FloatingHeader from '../components/organisms/FloatingHeader';
 import {
   Center,
@@ -25,6 +25,7 @@ import { links } from '../config/urls';
 import { useForm } from 'react-hook-form';
 import { useCreateUserMutation } from '../generated/graphql';
 import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/react';
 
 type RegisterFormValues = {
   login: string;
@@ -111,6 +112,24 @@ const Login: NextPage = () => {
       </HStack>
     </>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
+  const isUserLoggedIn = Boolean(session?.user);
+
+  if (isUserLoggedIn) {
+    return {
+      redirect: {
+        destination: links.game.browse,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 };
 
 export default Login;

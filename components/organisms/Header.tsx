@@ -18,6 +18,7 @@ import { FiChevronDown } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { NavLinkItem } from '../molecules';
 import { links } from '../../config/urls';
+import { signOut } from 'next-auth/react';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
@@ -76,8 +77,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           <MenuList bg="white" borderColor="gray.200">
             <MenuItem
               onClick={() => {
-                localStorage.removeItem('userLoggedIn');
-                push(links.landing);
+                signOut();
               }}
             >
               Sign out

@@ -1,4 +1,3 @@
-import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { Card } from '../../components/molecules';
 import {
@@ -16,7 +15,7 @@ import { useCurrentGameContext } from '../../contexts/currentGameContext';
 import { useRouter } from 'next/router';
 import { links } from '../../config/urls';
 
-const Game: NextPage = () => {
+const Game = () => {
   const { data } = useGetJoinableGamesQuery();
   const { changeGame } = useCurrentGameContext();
   const { push } = useRouter();
@@ -60,5 +59,7 @@ const Game: NextPage = () => {
     </SidebarLayout>
   );
 };
+
+Game.auth = true;
 
 export default Game;
