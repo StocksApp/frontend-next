@@ -11,6 +11,7 @@ import {
   SignInWithUserNameMutationResult,
 } from '../../../generated/graphql';
 import { client } from '../../../utils/client';
+import getConfig from 'next/config';
 
 type Data = {
   name: string;
@@ -72,7 +73,7 @@ const getOptions = (req: NextApiRequest): NextAuthOptions => ({
       },
     }),
   ],
-  secret: process.env.SECRET,
+  secret: getConfig().SECRET,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

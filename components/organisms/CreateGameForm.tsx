@@ -38,7 +38,7 @@ type CreateGameFormValues = {
   to: string;
   initialWallet: string;
   turnDuration: string;
-  markets: string[];
+  stocks: string[];
   private: boolean;
   invitedPlayers?: string[];
 };
@@ -57,17 +57,20 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   } = useForm<CreateGameFormValues>();
   const { push } = useRouter();
 
-  const [createSingleGame, { loading }] = useCreateGameMutation();
-  const { data: markets } = useGetMarketsQuery();
+  const [createGame, { loading }] = useCreateGameMutation();
+  const { data: marketsQueryData } = useGetMarketsQuery();
+  const stocks = marketsQueryData?.stocksSummary || [];
+
   const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
   const fromDate = watch('from');
 
   const onSubmit = async (values: CreateGameFormValues) => {
     try {
-      const { data } = await createSingleGame({
+      console.log(values);
+      const { data } = await createGame({
         variables: {
           ...values,
-          stocks: ['wse_stocks'],
+          private: values.private === undefined ? true : values.private,
           initialWallet: parseInt(values.initialWallet, 10),
           turnDuration: parseInt(values.turnDuration, 10),
         },
@@ -163,10 +166,10 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
             rules={{
               required: { value: true, message: 'To pole jest obowiązkowe' },
             }}
-            name="markets"
+            name="stocks"
             render={({ field: { ref, ...rest } }) => (
-              <FormControl isInvalid={!!errors.markets}>
-                <FormLabel htmlFor="markets">
+              <FormControl isInvalid={!!errors.stocks}>
+                <FormLabel htmlFor="stocks">
                   Dostępne w rozgrywce rynki
                 </FormLabel>
                 <AutoComplete openOnFocus multiple {...rest}>
@@ -182,10 +185,10 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
                     }
                   </AutoCompleteInput>
                   <FormErrorMessage>
-                    {(errors.markets as undefined | FieldError)?.message}
+                    {(errors.stocks as undefined | FieldError)?.message}
                   </FormErrorMessage>
                   <AutoCompleteList>
-                    {markets?.stocksSummary.map((stock, cid) => (
+                    {stocks.map((stock, cid) => (
                       <AutoCompleteItem
                         key={`option-${cid}`}
                         value={stock.name}

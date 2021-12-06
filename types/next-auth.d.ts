@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth';
+import NextAuth, { Session as NextSession } from 'next-auth';
 import { JWT as NextJWT } from 'next-auth/jwt';
 
 declare module 'next-auth' {
@@ -8,6 +8,10 @@ declare module 'next-auth' {
     id: string | undefined;
     email: string;
     userName: string;
+  }
+  interface Session extends NextSession {
+    accessToken: string;
+    user: { email: string; userName: string };
   }
 }
 

@@ -18,7 +18,7 @@ import { FiChevronDown } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { NavLinkItem } from '../molecules';
 import { links } from '../../config/urls';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
@@ -26,7 +26,8 @@ export type HeaderProps = FlexProps & {
 
 const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
-  const { push } = useRouter();
+  const { data: session } = useSession();
+
   return (
     <Flex
       px={4}
@@ -65,7 +66,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           >
             <HStack>
               <Avatar size={'sm'} src={'/static/tracz.jpg'} />
-              <Text fontSize="sm">Justina Clark</Text>
+              <Text fontSize="sm">{session?.user.userName}</Text>
 
               {!isMobile && (
                 <Box display={{ base: 'none', md: 'flex' }}>
