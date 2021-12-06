@@ -66,7 +66,6 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
 
   const onSubmit = async (values: CreateGameFormValues) => {
     try {
-      console.log(values);
       const { data } = await createGame({
         variables: {
           ...values,
