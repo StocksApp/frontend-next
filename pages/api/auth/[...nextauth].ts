@@ -1,5 +1,3 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import jwtDecode from 'jwt-decode';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
@@ -77,11 +75,10 @@ const getOptions = (req: NextApiRequest): NextAuthOptions => ({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
-        return {
-          ...token,
-          accessToken: user.accessToken,
-          refreshToken: user.refreshToken,
-          user: { email: user.email, userName: user.userName },
+        token.user = {
+          email: user.email,
+          userName: user.userName,
+          id: user.id,
         };
       }
       return token;
