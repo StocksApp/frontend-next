@@ -1,4 +1,3 @@
-import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { Card } from '../../components/molecules';
 import {
@@ -11,13 +10,13 @@ import {
   Tbody,
   Button,
 } from '@chakra-ui/react';
-import { useListJoinableGamesQuery } from '../../generated/graphql';
+import { useGetJoinableGamesQuery } from '../../generated/graphql';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
 import { useRouter } from 'next/router';
 import { links } from '../../config/urls';
 
-const Game: NextPage = () => {
-  const { data } = useListJoinableGamesQuery();
+const Game = () => {
+  const { data } = useGetJoinableGamesQuery();
   const { changeGame } = useCurrentGameContext();
   const { push } = useRouter();
   return (
@@ -35,8 +34,8 @@ const Game: NextPage = () => {
             </Tr>
           </Thead>
           <Tbody>
-            {data?.listJoinableGames &&
-              data.listJoinableGames.map((game, index) => (
+            {data?.getJoinableGames &&
+              data.getJoinableGames.map((game, index) => (
                 <Tr key={index}>
                   <Td>{game.from}</Td>
                   <Td>{game.to}</Td>
@@ -60,5 +59,7 @@ const Game: NextPage = () => {
     </SidebarLayout>
   );
 };
+
+Game.auth = true;
 
 export default Game;

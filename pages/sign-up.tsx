@@ -1,4 +1,4 @@
-import { NextPage } from 'next';
+import { GetServerSidePropsContext, NextPage } from 'next';
 import FloatingHeader from '../components/organisms/FloatingHeader';
 import {
   Center,
@@ -17,6 +17,9 @@ import {
   ModalCloseButton,
   ModalBody,
   HStack,
+  FormErrorMessage,
+  FormLabel,
+  FormControl,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -25,11 +28,14 @@ import { links } from '../config/urls';
 import { useForm } from 'react-hook-form';
 import { useCreateUserMutation } from '../generated/graphql';
 import { useRouter } from 'next/router';
+import { getSession } from 'next-auth/react';
+import { validateEqualStrings } from '../utils/form';
 
 type RegisterFormValues = {
   login: string;
   password: string;
   email: string;
+  repeatPassword: string;
 };
 
 const Login: NextPage = () => {
@@ -37,7 +43,14 @@ const Login: NextPage = () => {
   const [createUser, { data, loading }] = useCreateUserMutation();
   const { push } = useRouter();
 
-  const { register, handleSubmit } = useForm<RegisterFormValues>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<RegisterFormValues>();
+  const password = watch('password');
+
   const onSubmit = async (formValues: RegisterFormValues) => {
     try {
       await createUser({
@@ -71,18 +84,76 @@ const Login: NextPage = () => {
               <Box w="full">
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <VStack spacing={3}>
-                    <Text>Login</Text>
-                    <Input {...register('login', { required: true })} />
-                    <Text>Email</Text>
-                    <Input
-                      type="email"
-                      {...register('email', { required: true })}
-                    />
-                    <Text>Hasło</Text>
-                    <Input
-                      type="password"
-                      {...register('password', { required: true })}
-                    />
+                    <FormControl isInvalid={!!errors.login}>
+                      <FormLabel htmlFor="login">Nazwa użytkownika</FormLabel>
+                      <Input
+                        type="text"
+                        {...register('login', {
+                          required: {
+                            value: true,
+                            message: 'To pole jest obowiązkowe',
+                          },
+                        })}
+                      />
+                      <FormErrorMessage>
+                        {errors.login?.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.email}>
+                      <FormLabel htmlFor="email">Email</FormLabel>
+                      <Input
+                        type="text"
+                        {...register('email', {
+                          required: {
+                            value: true,
+                            message: 'To pole jest obowiązkowe',
+                          },
+                        })}
+                      />
+                      <FormErrorMessage>
+                        {errors.email?.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.password}>
+                      <FormLabel htmlFor="password">Hasło</FormLabel>
+                      <Input
+                        type="password"
+                        {...register('password', {
+                          required: {
+                            value: true,
+                            message: 'To pole jest obowiązkowe',
+                          },
+                        })}
+                      />
+                      <FormErrorMessage>
+                        {errors.password?.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                    <FormControl isInvalid={!!errors.repeatPassword}>
+                      <FormLabel htmlFor="repeatPassword">
+                        Powtórz hasło
+                      </FormLabel>
+                      <Input
+                        type="password"
+                        {...register('repeatPassword', {
+                          required: {
+                            value: true,
+                            message: 'To pole jest obowiązkowe',
+                          },
+                          validate: {
+                            validatePassword: (value) =>
+                              validateEqualStrings(
+                                value,
+                                password,
+                                'Hasłą powinny być identyczne'
+                              ),
+                          },
+                        })}
+                      />
+                      <FormErrorMessage>
+                        {errors.repeatPassword?.message}
+                      </FormErrorMessage>
+                    </FormControl>
                     <Button type="submit" isLoading={loading}>
                       Zarejestruj
                     </Button>
@@ -111,6 +182,24 @@ const Login: NextPage = () => {
       </HStack>
     </>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
+  const isUserLoggedIn = Boolean(session?.user);
+
+  if (isUserLoggedIn) {
+    return {
+      redirect: {
+        destination: links.game.browse,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 };
 
 export default Login;

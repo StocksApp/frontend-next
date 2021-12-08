@@ -11,7 +11,3 @@ generates:
       withMutationFn: true
       scalars:
         LocalDate: string
-    generates:
-  ./schema.graphql:
-    plugins:
-      - schema-ast

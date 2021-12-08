@@ -1,8 +1,7 @@
-import React, { ReactNode, useState, useEffect } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   Grid,
   useBreakpointValue,
-  Spinner,
   Box,
   Accordion,
   AccordionIcon,
@@ -13,8 +12,7 @@ import {
 import Sidebar from '../organisms/Sidebar';
 import NavLinkItem from '../molecules/NavLinkItem';
 import Header from '../organisms/Header';
-import { sidebarMenuLinks, links } from '../../config/urls';
-import { useRouter } from 'next/router';
+import { sidebarMenuLinks } from '../../config/urls';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 export type SidebarLayoutProps = {
@@ -23,8 +21,6 @@ export type SidebarLayoutProps = {
 
 const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const [open, setOpen] = useState(false);
-  const [hasMounted, setHasMounted] = useState(false);
-  const { push } = useRouter();
   const { gameId: currentGame } = useCurrentGameContext();
   const gridSettings = useBreakpointValue({
     base: {
@@ -37,29 +33,6 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
       templateRows: 'auto 1fr',
     },
   });
-
-  useEffect(() => {
-    if (!localStorage.getItem('userLoggedIn')) {
-      push(links.landing);
-    } else {
-      setHasMounted(true);
-    }
-  }, [push]);
-
-  if (!hasMounted) {
-    return (
-      <Grid
-        h="100vh"
-        w="100vw"
-        bg="cyan.50"
-        {...gridSettings}
-        alignItems="center"
-        justifyItems="center"
-      >
-        <Spinner size="lg" />
-      </Grid>
-    );
-  }
 
   return (
     <Grid h="100vh" w="100vw" bg="cyan.50" {...gridSettings}>

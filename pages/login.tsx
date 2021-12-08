@@ -1,51 +1,71 @@
-import { NextPage } from 'next';
+import { NextPage, GetServerSidePropsContext } from 'next';
 import FloatingHeader from '../components/organisms/FloatingHeader';
 import {
   VStack,
   Center,
   HStack,
   Heading,
-  Text,
   Input,
   Button,
   useToast,
   Box,
+  FormLabel,
+  FormControl,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import Image from 'next/image';
-import { useSignInMutation } from '../generated/graphql';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
-import { useEffect } from 'react';
-import { links } from '../config/urls';
 import { Card } from '../components/molecules';
+import { getSession, signIn } from 'next-auth/react';
+import { links } from '../config/urls';
+import useCallbackUrl from '../hooks/useCallbackUrl';
 
 type LoginFormValues = {
-  email: string;
+  emailOrUserName: string;
   password: string;
 };
 
+enum IdentificationValueType {
+  EMAIL,
+  USERNAME,
+}
+
 const Login: NextPage = () => {
   const toast = useToast();
-  const [signIn, { data, loading }] = useSignInMutation();
   const { push } = useRouter();
+  const { callbackUrl } = useCallbackUrl();
 
-  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginFormValues>();
   const onSubmit = async (formValues: LoginFormValues) => {
     try {
-      await signIn({ variables: { ...formValues } });
+      const identificationValueType = formValues.emailOrUserName.includes('@')
+        ? IdentificationValueType.EMAIL
+        : IdentificationValueType.USERNAME; // TODO check with better regex
+      const result = await signIn<'credentials'>(
+        identificationValueType === IdentificationValueType.EMAIL
+          ? 'loginWithEmail'
+          : 'loginWithUserName',
+        {
+          redirect: false,
+          callbackUrl: callbackUrl,
+          password: formValues.password,
+          email: formValues.emailOrUserName,
+        }
+      );
+      if (!result || result.error) throw new Error(result?.error || 'catchAll');
+      push(result?.url || links.landing);
     } catch (e) {
-      toast({ description: 'Something went wrong' });
+      setError('emailOrUserName', { message: 'Błędne dane użytkownika' });
+      setError('password', { message: 'Błędne dane użytkownika' });
     }
   };
 
-  useEffect(() => {
-    if (data?.signIn) {
-      localStorage.setItem('userLoggedIn', 'true');
-      push(links.game.browse);
-    } else if (data?.signIn === false) {
-      toast({ description: 'Niepoprawne dane logowania' });
-    }
-  }, [push, data, toast]);
   return (
     <>
       <FloatingHeader />
@@ -56,19 +76,43 @@ const Login: NextPage = () => {
               <Heading>Miło Cię znowu widzieć</Heading>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <VStack spacing={4}>
-                  <Text>Email</Text>
-                  <Input
-                    type="email"
-                    {...register('email', { required: true })}
-                  />
-                  <Text>Hasło</Text>
-                  <Input
-                    type="password"
-                    {...register('password', { required: true })}
-                  />
-                  <Button type="submit" isLoading={loading}>
-                    Zaloguj
-                  </Button>
+                  <FormControl isInvalid={!!errors.emailOrUserName}>
+                    <FormLabel htmlFor="emailOrUserName">
+                      Nazwa użytkownika lub email
+                    </FormLabel>
+                    <Input
+                      type="text"
+                      {...register('emailOrUserName', {
+                        required: {
+                          value: true,
+                          message: 'To pole jest obowiązkowe',
+                        },
+                      })}
+                    />
+
+                    <FormErrorMessage>
+                      {errors.emailOrUserName?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+
+                  <FormControl isInvalid={!!errors.password}>
+                    <FormLabel htmlFor="password">Hasło</FormLabel>
+                    <Input
+                      type="password"
+                      {...register('password', {
+                        required: {
+                          value: true,
+                          message: 'To pole jest obowiązkowe',
+                        },
+                      })}
+                    />
+
+                    <FormErrorMessage>
+                      {errors.password?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+
+                  <Button type="submit">Zaloguj</Button>
                 </VStack>
               </form>
             </VStack>
@@ -86,6 +130,24 @@ const Login: NextPage = () => {
       </HStack>
     </>
   );
+};
+
+export const getServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getSession(context);
+  const isUserLoggedIn = Boolean(session?.user);
+
+  if (isUserLoggedIn) {
+    return {
+      redirect: {
+        destination: links.game.browse,
+      },
+    };
+  }
+  return {
+    props: {},
+  };
 };
 
 export default Login;

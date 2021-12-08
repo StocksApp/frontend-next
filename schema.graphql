@@ -1,20 +1,19 @@
-"""
-The `BigDecimal` scalar type represents signed fractional values with arbitrary precision.
-"""
-scalar BigDecimal
-
 type GameRow {
   currentDate: LocalDate!
   from: LocalDate!
   id: Int!
-  initialWalletValue: BigDecimal!
-  isFinished: Boolean!
+  initialWalletValue: Int!
   private: Boolean!
   to: LocalDate!
   turnDuration: Int!
 }
 
 scalar LocalDate
+
+type LoginInfo {
+  tokens: Tokens!
+  userInfo: User!
+}
 
 type Marking {
   close: Float!
@@ -31,25 +30,16 @@ type MarkingAtDay {
 }
 
 type Mutation {
-  createGame(
-    from: LocalDate!
-    initialWallet: Int!
-    private: Boolean!
-    to: LocalDate!
-    turnDuration: Int!
-  ): Int!
-  createUser(email: String!, password: String!, userName: String!): Int!
-  signIn(email: String!, password: String!): Boolean!
+  createGame(endDate: LocalDate!, isPrivate: Boolean!, startDate: LocalDate!, stocks: [String!]!, turnDuration: Int!, userIds: [Int!], walletValue: Int!): Int!
+  createUser(email: String!, password: String!, userName: String!): LoginInfo!
+  loginByMail(email: String!, password: String!): LoginInfo!
+  loginByUserName(password: String!, userName: String!): LoginInfo!
+  refreshToken(refreshToken: String!): LoginInfo!
 }
 
 type Query {
-  getMarkings(
-    endDate: LocalDate
-    startDate: LocalDate
-    stock: String!
-    ticker: String!
-  ): [MarkingAtDay!]!
-  listJoinableGames: [GameRow!]!
+  getJoinableGames: [GameRow!]!
+  getMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, ticker: String!): [MarkingAtDay!]!
   stocksSummary(stocks: [String!]): [StockSummary!]!
 }
 
@@ -65,4 +55,15 @@ type StockSummary {
   readableName: String!
   securities: [SecurityInfo!]!
   startDate: LocalDate!
+}
+
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
+type User {
+  email: String!
+  id: Int!
+  userName: String!
 }

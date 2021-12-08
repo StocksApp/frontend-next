@@ -1,8 +1,7 @@
-import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import TickerChart from '../../components/molecules/TickerChart';
 
-const Game: NextPage = () => {
+const Analysis = () => {
   return (
     <SidebarLayout>
       <TickerChart />
@@ -10,4 +9,6 @@ const Game: NextPage = () => {
   );
 };
 
-export default Game;
+Analysis.auth = true;
+
+export default Analysis;

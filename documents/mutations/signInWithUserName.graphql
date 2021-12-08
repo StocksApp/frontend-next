@@ -1,0 +1,13 @@
+mutation signInWithUserName($userName: String!, $password: String!) {
+  loginByUserName(userName: $userName, password: $password) {
+    tokens {
+      accessToken
+      refreshToken
+    }
+    userInfo {
+      userName
+      email
+      id
+    }
+  }
+}

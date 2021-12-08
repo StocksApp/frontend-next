@@ -1,4 +1,3 @@
-import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { Card } from '../../components/molecules';
 import { VStack, Text, Heading, HStack } from '@chakra-ui/react';
@@ -11,7 +10,7 @@ enum CreatedGameType {
   SINGLE,
 }
 
-const CreateGame: NextPage = () => {
+const CreateGame = () => {
   const [createdGameType, setCreatedGameType] = useState<
     CreatedGameType | undefined
   >(undefined);
@@ -71,5 +70,7 @@ const CreateGame: NextPage = () => {
     </SidebarLayout>
   );
 };
+
+CreateGame.auth = true;
 
 export default CreateGame;

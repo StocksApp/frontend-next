@@ -1,0 +1,13 @@
+mutation signInWithEmail($email: String!, $password: String!) {
+  loginByMail(email: $email, password: $password) {
+    tokens {
+      accessToken
+      refreshToken
+    }
+    userInfo {
+      userName
+      email
+      id
+    }
+  }
+}

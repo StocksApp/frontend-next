@@ -26,7 +26,7 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
   const isDrawer = useBreakpointValue({ base: true, md: false });
   const { gameId } = useCurrentGameContext();
   const [games, _] = useState<string[]>(
-    ['Poza rozgrywką'].concat(gameId ? [`${gameId}`] : [])
+    ['Poza rozgrywką'].concat(gameId ? [`${gameId}`] : []) // TODO add better listing of games that user participates in
   );
 
   return !isDrawer ? (
