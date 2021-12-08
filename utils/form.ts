@@ -11,3 +11,11 @@ export const validateDatesOrder = (
 export const validateDate = (date: Date, errorMessage?: string) => {
   return isValid(date) || errorMessage;
 };
+
+export const validateEqualStrings = (
+  first: string,
+  second: string,
+  errorMessage: string
+) => {
+  return first === second || errorMessage;
+};

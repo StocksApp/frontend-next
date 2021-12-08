@@ -5,11 +5,13 @@ import {
   Center,
   HStack,
   Heading,
-  Text,
   Input,
   Button,
   useToast,
   Box,
+  FormLabel,
+  FormControl,
+  FormErrorMessage,
 } from '@chakra-ui/react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -34,7 +36,12 @@ const Login: NextPage = () => {
   const { push } = useRouter();
   const { callbackUrl } = useCallbackUrl();
 
-  const { register, handleSubmit } = useForm<LoginFormValues>();
+  const {
+    register,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<LoginFormValues>();
   const onSubmit = async (formValues: LoginFormValues) => {
     try {
       const identificationValueType = formValues.emailOrUserName.includes('@')
@@ -54,7 +61,8 @@ const Login: NextPage = () => {
       if (!result || result.error) throw new Error(result?.error || 'catchAll');
       push(result?.url || links.landing);
     } catch (e) {
-      toast({ description: 'Something went wrong' });
+      setError('emailOrUserName', { message: 'Błędne dane użytkownika' });
+      setError('password', { message: 'Błędne dane użytkownika' });
     }
   };
 
@@ -68,16 +76,42 @@ const Login: NextPage = () => {
               <Heading>Miło Cię znowu widzieć</Heading>
               <form onSubmit={handleSubmit(onSubmit)}>
                 <VStack spacing={4}>
-                  <Text>Email</Text>
-                  <Input
-                    type="email"
-                    {...register('emailOrUserName', { required: true })}
-                  />
-                  <Text>Hasło</Text>
-                  <Input
-                    type="password"
-                    {...register('password', { required: true })}
-                  />
+                  <FormControl isInvalid={!!errors.emailOrUserName}>
+                    <FormLabel htmlFor="emailOrUserName">
+                      Nazwa użytkownika lub email
+                    </FormLabel>
+                    <Input
+                      type="text"
+                      {...register('emailOrUserName', {
+                        required: {
+                          value: true,
+                          message: 'To pole jest obowiązkowe',
+                        },
+                      })}
+                    />
+
+                    <FormErrorMessage>
+                      {errors.emailOrUserName?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+
+                  <FormControl isInvalid={!!errors.password}>
+                    <FormLabel htmlFor="password">Hasło</FormLabel>
+                    <Input
+                      type="password"
+                      {...register('password', {
+                        required: {
+                          value: true,
+                          message: 'To pole jest obowiązkowe',
+                        },
+                      })}
+                    />
+
+                    <FormErrorMessage>
+                      {errors.password?.message}
+                    </FormErrorMessage>
+                  </FormControl>
+
                   <Button type="submit">Zaloguj</Button>
                 </VStack>
               </form>

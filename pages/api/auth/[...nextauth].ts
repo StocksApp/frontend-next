@@ -15,7 +15,7 @@ type Data = {
   name: string;
 };
 
-const getOptions = (req: NextApiRequest): NextAuthOptions => ({
+const getOptions = (): NextAuthOptions => ({
   pages: {
     signIn: links.login,
   },
@@ -75,6 +75,8 @@ const getOptions = (req: NextApiRequest): NextAuthOptions => ({
   callbacks: {
     async jwt({ token, user }) {
       if (user) {
+        token.accessToken = user.accessToken;
+        token.refreshToken = user.refreshToken;
         token.user = {
           email: user.email,
           userName: user.userName,
@@ -92,6 +94,6 @@ const getOptions = (req: NextApiRequest): NextAuthOptions => ({
 });
 
 const requestHandler = (req: NextApiRequest, res: NextApiResponse<Data>) =>
-  NextAuth(req, res, getOptions(req));
+  NextAuth(req, res, getOptions());
 
 export default requestHandler;
