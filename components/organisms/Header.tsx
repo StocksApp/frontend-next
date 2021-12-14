@@ -19,6 +19,12 @@ import { useRouter } from 'next/router';
 import { NavLinkItem } from '../molecules';
 import { links } from '../../config/urls';
 import { signOut, useSession } from 'next-auth/react';
+import { GrCaretNext } from 'react-icons/gr';
+import {
+  GetActiveTransactionsDocument,
+  useEndTurnMutation,
+} from '../../generated/graphql';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
@@ -27,6 +33,10 @@ export type HeaderProps = FlexProps & {
 const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { data: session } = useSession();
+  const [nextTurn] = useEndTurnMutation({
+    refetchQueries: [GetActiveTransactionsDocument],
+  });
+  const { gameId } = useCurrentGameContext();
 
   return (
     <Flex
@@ -56,6 +66,19 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
       <Box flex="0">
         <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
       </Box>
+      <HStack
+        p={4}
+        m={4}
+        borderRadius={10}
+        cursor="pointer"
+        alignItems="center"
+        _hover={{ background: 'cyan.100' }}
+        onClick={() => nextTurn({ variables: { gameId } })}
+      >
+        <Text>Next Turn</Text>
+        <GrCaretNext />
+      </HStack>
+
       <Flex alignItems={'center'}>
         <Menu>
           <MenuButton
