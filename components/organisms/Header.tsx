@@ -66,7 +66,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           >
             <HStack>
               <Avatar size={'sm'} src={'/static/tracz.jpg'} />
-              <Text fontSize="sm">{session?.user.userName}</Text>
+              <Text fontSize="sm">{session?.user?.userName}</Text>
 
               {!isMobile && (
                 <Box display={{ base: 'none', md: 'flex' }}>

@@ -23,7 +23,6 @@ const Game = () => {
     <SidebarLayout>
       <Card h="full">
         <Table variant="simple">
-          <TableCaption>Uproszczony widok aktywnych gier</TableCaption>
           <Thead>
             <Tr>
               <Th>Początek okresu gry</Th>

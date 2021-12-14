@@ -1,0 +1,5 @@
+schema:'schema.graphql'
+extension:
+  endpoints:
+    default:
+      url: http://localhost:8080/graphql

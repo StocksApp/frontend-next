@@ -1,0 +1,6 @@
+query MarketsNames($stocks: [String!]) {
+  stocksSummary(stocks: $stocks) {
+    name
+    readableName
+  }
+}

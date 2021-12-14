@@ -8,6 +8,7 @@ export const links = {
     base: '/game',
     browse: '/game',
     overview: (id: string) => `/game/${id}`,
+    start: (id: string) => `/game/${id}/start`,
     create: '/game/create',
     join: '/game/join',
     transactions: {

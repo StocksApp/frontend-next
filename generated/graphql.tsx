@@ -15,12 +15,23 @@ export type Scalars = {
   LocalDate: string;
 };
 
+export type GameParticipationRow = {
+  __typename?: 'GameParticipationRow';
+  gameId: Scalars['Int'];
+  id: Scalars['Int'];
+  userId: Scalars['Int'];
+};
+
 export type GameRow = {
   __typename?: 'GameRow';
   currentDate: Scalars['LocalDate'];
   from: Scalars['LocalDate'];
   id: Scalars['Int'];
   initialWalletValue: Scalars['Int'];
+  isFinished: Scalars['Boolean'];
+  isStarted: Scalars['Boolean'];
+  markets: Array<MarketsRow>;
+  ownerId: Scalars['Int'];
   private: Scalars['Boolean'];
   to: Scalars['LocalDate'];
   turnDuration: Scalars['Int'];
@@ -30,6 +41,12 @@ export type LoginInfo = {
   __typename?: 'LoginInfo';
   tokens: Tokens;
   userInfo: User;
+};
+
+export type MarketsRow = {
+  __typename?: 'MarketsRow';
+  id: Scalars['Int'];
+  name: Scalars['String'];
 };
 
 export type Marking = {
@@ -50,11 +67,30 @@ export type MarkingAtDay = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addTransactionDefinition: TransactionRow;
   createGame: Scalars['Int'];
   createUser: LoginInfo;
+  createUserStrategy: UserStrategyRow;
+  deleteUserStrategy: Scalars['Int'];
+  joinGame: GameParticipationRow;
   loginByMail: LoginInfo;
   loginByUserName: LoginInfo;
   refreshToken: LoginInfo;
+  startGame: Scalars['String'];
+};
+
+
+export type MutationAddTransactionDefinitionArgs = {
+  activationLimit?: Maybe<Scalars['Float']>;
+  endDate?: Maybe<Scalars['LocalDate']>;
+  gameId: Scalars['Int'];
+  isSellTransaction: Scalars['Boolean'];
+  marketName: Scalars['String'];
+  minQuantity?: Maybe<Scalars['Int']>;
+  priceLimit?: Maybe<Scalars['Float']>;
+  quantity: Scalars['Int'];
+  startDate: Scalars['LocalDate'];
+  ticker: Scalars['String'];
 };
 
 
@@ -76,6 +112,23 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationCreateUserStrategyArgs = {
+  configJson: Scalars['String'];
+  gameId: Scalars['Int'];
+  strategyType: Scalars['String'];
+};
+
+
+export type MutationDeleteUserStrategyArgs = {
+  userStrategyId: Scalars['Int'];
+};
+
+
+export type MutationJoinGameArgs = {
+  gameId: Scalars['Int'];
+};
+
+
 export type MutationLoginByMailArgs = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -92,10 +145,17 @@ export type MutationRefreshTokenArgs = {
   refreshToken: Scalars['String'];
 };
 
+
+export type MutationStartGameArgs = {
+  gameId: Scalars['Int'];
+};
+
 export type Query = {
   __typename?: 'Query';
   getJoinableGames: Array<GameRow>;
   getMarkings: Array<MarkingAtDay>;
+  getUserStrategies: Array<UserStrategyRow>;
+  getUsersGames: Array<GameRow>;
   stocksSummary: Array<StockSummary>;
 };
 
@@ -105,6 +165,16 @@ export type QueryGetMarkingsArgs = {
   startDate?: Maybe<Scalars['LocalDate']>;
   stock: Scalars['String'];
   ticker: Scalars['String'];
+};
+
+
+export type QueryGetUserStrategiesArgs = {
+  gameId: Scalars['Int'];
+};
+
+
+export type QueryGetUsersGamesArgs = {
+  onlyActive?: Maybe<Scalars['Boolean']>;
 };
 
 
@@ -134,11 +204,34 @@ export type Tokens = {
   refreshToken: Scalars['String'];
 };
 
+export type TransactionRow = {
+  __typename?: 'TransactionRow';
+  activationLimit?: Maybe<Scalars['Float']>;
+  from: Scalars['LocalDate'];
+  id: Scalars['Int'];
+  isCancelled: Scalars['Boolean'];
+  isFullified: Scalars['Boolean'];
+  isSellTransaction: Scalars['Boolean'];
+  minQuantity?: Maybe<Scalars['Int']>;
+  priceLimit?: Maybe<Scalars['Float']>;
+  quantity: Scalars['Int'];
+  ticker: Scalars['String'];
+  to?: Maybe<Scalars['LocalDate']>;
+};
+
 export type User = {
   __typename?: 'User';
   email: Scalars['String'];
   id: Scalars['Int'];
   userName: Scalars['String'];
+};
+
+export type UserStrategyRow = {
+  __typename?: 'UserStrategyRow';
+  configJson: Scalars['String'];
+  id: Scalars['Int'];
+  strategyId: Scalars['Int'];
+  userGameId: Scalars['Int'];
 };
 
 export type CreateGameMutationVariables = Exact<{
@@ -152,6 +245,15 @@ export type CreateGameMutationVariables = Exact<{
 
 
 export type CreateGameMutation = { __typename?: 'Mutation', createGame: number };
+
+export type CreateStrategyMutationVariables = Exact<{
+  gameId: Scalars['Int'];
+  strategyType: Scalars['String'];
+  configJson: Scalars['String'];
+}>;
+
+
+export type CreateStrategyMutation = { __typename?: 'Mutation', createUserStrategy: { __typename?: 'UserStrategyRow', id: number, configJson: string } };
 
 export type CreateUserMutationVariables = Exact<{
   name: Scalars['String'];
@@ -193,12 +295,24 @@ export type GetMarkingsForTickerQueryVariables = Exact<{
 
 export type GetMarkingsForTickerQuery = { __typename?: 'Query', getMarkings: Array<{ __typename?: 'MarkingAtDay', date: string, marking: { __typename?: 'Marking', open: number, low: number, high: number, close: number, volume: number } }> };
 
+export type MarketsNamesQueryVariables = Exact<{
+  stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
+
+
+export type MarketsNamesQuery = { __typename?: 'Query', stocksSummary: Array<{ __typename?: 'StockSummary', name: string, readableName: string }> };
+
 export type GetTickersQueryVariables = Exact<{
   stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
 export type GetTickersQuery = { __typename?: 'Query', stocksSummary: Array<{ __typename?: 'StockSummary', name: string, securities: Array<{ __typename?: 'SecurityInfo', ticker: string }> }> };
+
+export type GetUserGamesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetUserGamesQuery = { __typename?: 'Query', getUsersGames: Array<{ __typename?: 'GameRow', currentDate: string, turnDuration: number, from: string, id: number, initialWalletValue: number, isFinished: boolean, isStarted: boolean, to: string, markets: Array<{ __typename?: 'MarketsRow', id: number, name: string }> }> };
 
 export type GetJoinableGamesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -256,6 +370,46 @@ export function useCreateGameMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CreateGameMutationHookResult = ReturnType<typeof useCreateGameMutation>;
 export type CreateGameMutationResult = Apollo.MutationResult<CreateGameMutation>;
 export type CreateGameMutationOptions = Apollo.BaseMutationOptions<CreateGameMutation, CreateGameMutationVariables>;
+export const CreateStrategyDocument = gql`
+    mutation createStrategy($gameId: Int!, $strategyType: String!, $configJson: String!) {
+  createUserStrategy(
+    gameId: $gameId
+    strategyType: $strategyType
+    configJson: $configJson
+  ) {
+    id
+    configJson
+  }
+}
+    `;
+export type CreateStrategyMutationFn = Apollo.MutationFunction<CreateStrategyMutation, CreateStrategyMutationVariables>;
+
+/**
+ * __useCreateStrategyMutation__
+ *
+ * To run a mutation, you first call `useCreateStrategyMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateStrategyMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createStrategyMutation, { data, loading, error }] = useCreateStrategyMutation({
+ *   variables: {
+ *      gameId: // value for 'gameId'
+ *      strategyType: // value for 'strategyType'
+ *      configJson: // value for 'configJson'
+ *   },
+ * });
+ */
+export function useCreateStrategyMutation(baseOptions?: Apollo.MutationHookOptions<CreateStrategyMutation, CreateStrategyMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateStrategyMutation, CreateStrategyMutationVariables>(CreateStrategyDocument, options);
+      }
+export type CreateStrategyMutationHookResult = ReturnType<typeof useCreateStrategyMutation>;
+export type CreateStrategyMutationResult = Apollo.MutationResult<CreateStrategyMutation>;
+export type CreateStrategyMutationOptions = Apollo.BaseMutationOptions<CreateStrategyMutation, CreateStrategyMutationVariables>;
 export const CreateUserDocument = gql`
     mutation createUser($name: String!, $password: String!, $email: String!) {
   createUser(userName: $name, password: $password, email: $email) {
@@ -464,6 +618,42 @@ export function useGetMarkingsForTickerLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetMarkingsForTickerQueryHookResult = ReturnType<typeof useGetMarkingsForTickerQuery>;
 export type GetMarkingsForTickerLazyQueryHookResult = ReturnType<typeof useGetMarkingsForTickerLazyQuery>;
 export type GetMarkingsForTickerQueryResult = Apollo.QueryResult<GetMarkingsForTickerQuery, GetMarkingsForTickerQueryVariables>;
+export const MarketsNamesDocument = gql`
+    query MarketsNames($stocks: [String!]) {
+  stocksSummary(stocks: $stocks) {
+    name
+    readableName
+  }
+}
+    `;
+
+/**
+ * __useMarketsNamesQuery__
+ *
+ * To run a query within a React component, call `useMarketsNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMarketsNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMarketsNamesQuery({
+ *   variables: {
+ *      stocks: // value for 'stocks'
+ *   },
+ * });
+ */
+export function useMarketsNamesQuery(baseOptions?: Apollo.QueryHookOptions<MarketsNamesQuery, MarketsNamesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<MarketsNamesQuery, MarketsNamesQueryVariables>(MarketsNamesDocument, options);
+      }
+export function useMarketsNamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MarketsNamesQuery, MarketsNamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<MarketsNamesQuery, MarketsNamesQueryVariables>(MarketsNamesDocument, options);
+        }
+export type MarketsNamesQueryHookResult = ReturnType<typeof useMarketsNamesQuery>;
+export type MarketsNamesLazyQueryHookResult = ReturnType<typeof useMarketsNamesLazyQuery>;
+export type MarketsNamesQueryResult = Apollo.QueryResult<MarketsNamesQuery, MarketsNamesQueryVariables>;
 export const GetTickersDocument = gql`
     query getTickers($stocks: [String!]) {
   stocksSummary(stocks: $stocks) {
@@ -502,6 +692,51 @@ export function useGetTickersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetTickersQueryHookResult = ReturnType<typeof useGetTickersQuery>;
 export type GetTickersLazyQueryHookResult = ReturnType<typeof useGetTickersLazyQuery>;
 export type GetTickersQueryResult = Apollo.QueryResult<GetTickersQuery, GetTickersQueryVariables>;
+export const GetUserGamesDocument = gql`
+    query getUserGames {
+  getUsersGames {
+    currentDate
+    turnDuration
+    from
+    id
+    initialWalletValue
+    isFinished
+    isStarted
+    markets {
+      id
+      name
+    }
+    to
+  }
+}
+    `;
+
+/**
+ * __useGetUserGamesQuery__
+ *
+ * To run a query within a React component, call `useGetUserGamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserGamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserGamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetUserGamesQuery(baseOptions?: Apollo.QueryHookOptions<GetUserGamesQuery, GetUserGamesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserGamesQuery, GetUserGamesQueryVariables>(GetUserGamesDocument, options);
+      }
+export function useGetUserGamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserGamesQuery, GetUserGamesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserGamesQuery, GetUserGamesQueryVariables>(GetUserGamesDocument, options);
+        }
+export type GetUserGamesQueryHookResult = ReturnType<typeof useGetUserGamesQuery>;
+export type GetUserGamesLazyQueryHookResult = ReturnType<typeof useGetUserGamesLazyQuery>;
+export type GetUserGamesQueryResult = Apollo.QueryResult<GetUserGamesQuery, GetUserGamesQueryVariables>;
 export const GetJoinableGamesDocument = gql`
     query getJoinableGames {
   getJoinableGames {

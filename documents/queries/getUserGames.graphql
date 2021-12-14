@@ -1,0 +1,17 @@
+query getUserGames {
+    getUsersGames {
+      currentDate
+      turnDuration
+      from
+      id
+      initialWalletValue
+      isFinished
+      isStarted
+      markets {
+        id
+        name
+      }
+      to
+      
+    }
+}

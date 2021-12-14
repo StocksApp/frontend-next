@@ -28,10 +28,10 @@ import {
 } from '../../generated/graphql';
 import { formatISO, parse } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
-import { User } from '../../utils/interfaces';
+// import { User } from '../../utils/interfaces';
 import { links } from '../../config/urls';
-import GenericTablePanel from '../molecules/GenericTablePanel';
-import { FaTimes } from 'react-icons/fa';
+// import GenericTablePanel from '../molecules/GenericTablePanel';
+// import { FaTimes } from 'react-icons/fa';
 
 type CreateGameFormValues = {
   from: string;
@@ -61,7 +61,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   const { data: marketsQueryData } = useGetMarketsQuery();
   const stocks = marketsQueryData?.stocksSummary || [];
 
-  const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
+  // const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
   const fromDate = watch('from');
 
   const onSubmit = async (values: CreateGameFormValues) => {
@@ -204,7 +204,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
             )}
           />
         </GridItem>
-        {!single && (
+        {/* {!single && (
           <>
             <GridItem colSpan={2}>
               <FormControl display="grid" gridTemplateColumns="1fr 1fr">
@@ -248,7 +248,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
               </GenericTablePanel>
             </GridItem>
           </>
-        )}
+        )} */}
       </SimpleGrid>
       <Flex p={6} pb={0} justifyContent="center">
         <Button type="submit" isLoading={loading} px={20} py={2}>
