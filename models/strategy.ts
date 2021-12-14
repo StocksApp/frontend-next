@@ -81,6 +81,7 @@ class NurtureProfitsTransactionStrategy<
   }
 
   isBroken(data: string) {
+    console.log('isBroken');
     return false;
   }
 }
