@@ -1,4 +1,5 @@
 type GameParticipationRow {
+  clickedNextTurn: Boolean!
   gameId: Int!
   id: Int!
   userId: Int!
@@ -53,6 +54,7 @@ type Mutation {
   joinGame(gameId: Int!): GameParticipationRow!
   loginByMail(email: String!, password: String!): LoginInfo!
   loginByUserName(password: String!, userName: String!): LoginInfo!
+  nextTurn(gameId: Int!): Int!
   refreshToken(refreshToken: String!): LoginInfo!
   startGame(gameId: Int!): String!
 }
@@ -61,6 +63,7 @@ type Query {
   getJoinableGames: [GameRow!]!
   getMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, ticker: String!): [MarkingAtDay!]!
   getUserStrategies(gameId: Int!): [UserStrategyRow!]!
+  getUserTransactions(gameId: Int!): [TransactionRow!]!
   getUserWallet(gameId: Int!): WalletSummary!
   getUsersGames(onlyActive: Boolean): [GameRow!]!
   stocksSummary(stocks: [String!]): [StockSummary!]!

@@ -1,0 +1,3 @@
+mutation endTurn($gameId: Int!) {
+  nextTurn(gameId: $gameId)
+}

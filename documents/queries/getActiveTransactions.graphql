@@ -1,0 +1,14 @@
+query getActiveTransactions($gameId: Int!) {
+  getUserTransactions(gameId: $gameId) {
+    from
+    isSellTransaction
+    minQuantity
+    priceLimit
+    quantity
+    to
+    ticker
+    isFullified
+    isCancelled
+    id
+  }
+}
