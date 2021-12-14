@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import SidebarLayout from '../../../components/layouts/SidebarLayout';
 import Card from '../../../components/molecules/Card';
 import GenericTablePanel from '../../../components/molecules/GenericTablePanel';
+import WalletInfoCard from '../../../components/organisms/WalletInfoCard';
 import {
   useGetUserGamesQuery,
   useGetWalletSummaryLazyQuery,
@@ -27,6 +28,11 @@ const WalletOverview = () => {
   }, [gameId, getWallet]);
 
   console.log(walletData);
+
+  if (!game || !walletData) {
+    return null;
+  }
+
   return (
     <SidebarLayout>
       <HStack>
@@ -34,16 +40,15 @@ const WalletOverview = () => {
           <GenericTablePanel title={'Posiadane aktywa'} w="full">
             <GenericTablePanel.Table
               tableHeaders={['Rynek', 'Ticker', 'Ilość']}
-              tableValues={[]}
+              tableValues={walletData.getUserWallet.ownedSecurities.map((s) => [
+                s.market,
+                s.ticker,
+                s.quantity,
+              ])}
             />
           </GenericTablePanel>
         </Card>
-        <Card flex={1}>
-          <div>
-            {/* {JSON.stringify(game)} */}
-            {JSON.stringify(walletData)}
-          </div>
-        </Card>
+        <WalletInfoCard game={game} walletInfo={walletData.getUserWallet} />
       </HStack>
     </SidebarLayout>
   );
