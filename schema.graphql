@@ -61,8 +61,17 @@ type Query {
   getJoinableGames: [GameRow!]!
   getMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, ticker: String!): [MarkingAtDay!]!
   getUserStrategies(gameId: Int!): [UserStrategyRow!]!
+  getUserWallet(gameId: Int!): WalletSummary!
   getUsersGames(onlyActive: Boolean): [GameRow!]!
   stocksSummary(stocks: [String!]): [StockSummary!]!
+}
+
+type SecuritiesRow {
+  id: Int!
+  market: String!
+  quantity: Int!
+  ticker: String!
+  walletId: Int!
 }
 
 type SecurityInfo {
@@ -109,4 +118,10 @@ type UserStrategyRow {
   id: Int!
   strategyId: Int!
   userGameId: Int!
+}
+
+type WalletSummary {
+  availableMoney: Float!
+  blockedMoney: Float!
+  ownedSecurities: [SecuritiesRow!]!
 }

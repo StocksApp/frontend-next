@@ -1,4 +1,4 @@
-import { HStack, Button, VStack } from '@chakra-ui/react';
+import { HStack, Button, VStack, Text } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import SidebarLayout from '../../../components/layouts/SidebarLayout';
 import { Card } from '../../../components/molecules';
@@ -41,19 +41,11 @@ const GameOverview = () => {
           >
             <GenericTablePanel.Table
               tableHeaders={['Typ strategii', 'Więcej']}
-              tableValues={[
-                [
-                  'TODO',
-                  <GiMagnifyingGlass key={1} style={{ cursor: 'pointer' }} />,
-                ],
-              ]}
+              tableValues={[]}
             />
           </GenericTablePanel>
         </Card>
         <GameInfoCard game={game} markets={markets} />
-      </HStack>
-      <HStack>
-        <div>hadsfasd</div>
       </HStack>
     </SidebarLayout>
   );

@@ -1,6 +1,7 @@
 import { Card } from '../molecules';
-import { VStack, HStack, Heading, Text } from '@chakra-ui/react';
-import { GameRow } from '../../generated/graphql';
+import { VStack, HStack, Heading, Text, Button } from '@chakra-ui/react';
+import { GameRow, useStartGameMutation } from '../../generated/graphql';
+import { useRouter } from 'next/router';
 
 type GameInfoCardType = {
   game: Omit<GameRow, 'ownerId' | 'private'>;
@@ -12,6 +13,15 @@ type GameInfoCardType = {
 
 //TODO add users count to displayed values
 const GameInfoCard = ({ game, markets }: GameInfoCardType) => {
+  const [startGame] = useStartGameMutation();
+  const { push } = useRouter();
+
+  const handleButtonClick = async (e: { preventDefault: () => void }) => {
+    e.preventDefault();
+    await startGame({ variables: { gameId: game.id } });
+    push(`/game/${game.id}/wallet`);
+  };
+
   return (
     <Card>
       <VStack>
@@ -38,6 +48,9 @@ const GameInfoCard = ({ game, markets }: GameInfoCardType) => {
               <Text>Obecna data w rozgrywce</Text>
               <Text>{game.currentDate}</Text>
             </HStack>
+          )}
+          {!game.isStarted && (
+            <Button onClick={handleButtonClick}>Rozpocznij grę</Button>
           )}
         </VStack>
       </VStack>

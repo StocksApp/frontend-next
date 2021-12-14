@@ -1,5 +1,7 @@
 import {
   Button,
+  Center,
+  Flex,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -65,7 +67,11 @@ const MarketsDiversityStrategyForm = ({
           {errors.maxPercentOnMarket?.message}
         </FormErrorMessage>
       </FormControl>
-      <Button type="submit">Dodaj</Button>
+      <Flex>
+        <Center flex="1" h="75px">
+          <Button type="submit">Dodaj</Button>
+        </Center>
+      </Flex>
     </form>
   );
 };

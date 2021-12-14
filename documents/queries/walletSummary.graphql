@@ -1,0 +1,11 @@
+query GetWalletSummary($gameId: Int!) {
+    getUserWallet(gameId: $gameId){
+        availableMoney
+        blockedMoney
+        ownedSecurities {
+            ticker
+            quantity
+            market
+        }
+    }
+}
