@@ -1,22 +1,20 @@
+import { useRouter } from 'next/router';
 import {
   createContext,
   useState,
   useEffect,
   ReactNode,
-  useCallback,
   useContext,
 } from 'react';
-import { currentGameKey } from '../config/localStorageKeys';
+import { GameRow, useGetUserGamesQuery } from '../generated/graphql';
+import { getSingleValueFromQuery } from '../utils/url';
 
 export type currentGameContextValue = {
-  gameId: number | null;
-  changeGame: (gameId: number) => void;
+  game: Omit<GameRow, 'ownerId' | 'private'> | undefined;
 };
 
 const defaultValue: currentGameContextValue = {
-  gameId: -1,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  changeGame: () => {},
+  game: undefined,
 };
 
 const CurrentGameContext = createContext<currentGameContextValue>(defaultValue);
@@ -26,27 +24,28 @@ export const CurrentGameContextProvider = ({
 }: {
   children: ReactNode;
 }) => {
-  const [gameId, setGameId] = useState<number | null>(null);
+  const [game, setGame] = useState<
+    Omit<GameRow, 'ownerId' | 'private'> | undefined
+  >(undefined);
+  const { data } = useGetUserGamesQuery(); // TODO get only one game by id, get users in game in that query
 
-  const refresh = useCallback((gameId: number) => {
-    setGameId(gameId);
-    localStorage.setItem(currentGameKey, `${gameId}`);
-  }, []);
+  const { query } = useRouter();
+  const gameIdFromQuery = getSingleValueFromQuery(query, 'id');
 
   useEffect(() => {
-    const localStorageValue = localStorage.getItem(currentGameKey);
-    setGameId(
-      localStorageValue !== null
-        ? parseInt(localStorageValue, 10)
-        : localStorageValue
-    );
-  }, []);
+    if (!gameIdFromQuery) setGame(undefined);
+    else {
+      const currentGame = data?.getUsersGames.find(
+        (game) => game.id === parseInt(gameIdFromQuery, 10)
+      );
+      setGame(currentGame);
+    }
+  }, [gameIdFromQuery, data?.getUsersGames]);
 
   return (
     <CurrentGameContext.Provider
       value={{
-        gameId: gameId,
-        changeGame: refresh,
+        game,
       }}
     >
       {children}

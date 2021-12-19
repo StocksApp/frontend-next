@@ -36,7 +36,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
   const [nextTurn] = useEndTurnMutation({
     refetchQueries: [GetActiveTransactionsDocument],
   });
-  const { gameId } = useCurrentGameContext();
+  const { game } = useCurrentGameContext();
 
   return (
     <Flex
@@ -66,7 +66,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
       <Box flex="0">
         <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
       </Box>
-      {gameId && (
+      {game && (
         <HStack
           p={4}
           m={4}
@@ -74,7 +74,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           cursor="pointer"
           alignItems="center"
           _hover={{ background: 'cyan.100' }}
-          onClick={() => nextTurn({ variables: { gameId } })}
+          onClick={() => nextTurn({ variables: { gameId: game.id } })}
         >
           <Text>Next Turn</Text>
           <GrCaretNext />

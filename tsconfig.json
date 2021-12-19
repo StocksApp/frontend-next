@@ -14,7 +14,8 @@
     "isolatedModules": true,
     "strictNullChecks": true,
     "jsx": "preserve",
-    "typeRoots": ["./types", "./node_modules/@types"]
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "incremental": true
   },
   "include": ["next-env.d.ts", "/**/*.ts", "/**/*.tsx"],
   "exclude": ["node_modules", ".next", "generated/"]

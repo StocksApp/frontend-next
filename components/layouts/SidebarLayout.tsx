@@ -21,7 +21,7 @@ export type SidebarLayoutProps = {
 
 const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const [open, setOpen] = useState(false);
-  const { gameId: currentGame } = useCurrentGameContext();
+  const { game: currentGame } = useCurrentGameContext();
   const gridSettings = useBreakpointValue({
     base: {
       templateAreas: `'header' 'content'`,

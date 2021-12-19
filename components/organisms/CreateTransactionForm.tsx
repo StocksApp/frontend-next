@@ -30,7 +30,7 @@ import { links } from '../../config/urls';
 // import GenericTablePanel from '../molecules/GenericTablePanel';
 // import { FaTimes } from 'react-icons/fa';
 
-type CreateGameFormValues = {
+type CreateTransactionFormValues = {
   from: string;
   market: string;
   ticker: string;
@@ -43,7 +43,7 @@ const CreateTransactionForm = ({ gameId }: { gameId: number }) => {
     register,
     formState: { errors },
     watch,
-  } = useForm<CreateGameFormValues>();
+  } = useForm<CreateTransactionFormValues>();
   const selectedMarket = watch('market');
   const [createTransaction, { loading }] = useCreateTransactionMutation({
     refetchQueries: [GetActiveTransactionsDocument],
@@ -59,7 +59,7 @@ const CreateTransactionForm = ({ gameId }: { gameId: number }) => {
     }
   }, [selectedMarket, getTickers]);
 
-  const onSubmit = async (values: CreateGameFormValues) => {
+  const onSubmit = async (values: CreateTransactionFormValues) => {
     try {
       const { data } = await createTransaction({
         variables: {
@@ -82,6 +82,24 @@ const CreateTransactionForm = ({ gameId }: { gameId: number }) => {
       <SimpleGrid columnGap={16} rowGap={4} columns={{ base: 1, sm: 2 }}>
         <FormControl isInvalid={!!errors.from}>
           <FormLabel htmlFor="name">Data rozpoczęcia</FormLabel>{' '}
+          <Input
+            type="date"
+            max={formatISO(Date.now(), { representation: 'date' })}
+            {...register('from', {
+              deps: ['to'],
+              required: { value: true, message: 'To pole jest obowiązkowe' },
+              validate: (value) =>
+                validateDate(
+                  parse(value, 'y-MM-dd', new Date()),
+                  'Niepoprawny format daty'
+                ),
+            })}
+          />
+          <FormErrorMessage>{errors.from?.message}</FormErrorMessage>
+        </FormControl>
+
+        <FormControl isInvalid={!!errors.from}>
+          <FormLabel htmlFor="name">Data zakończenia</FormLabel>{' '}
           <Input
             type="date"
             max={formatISO(Date.now(), { representation: 'date' })}

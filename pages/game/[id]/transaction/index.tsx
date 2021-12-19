@@ -16,21 +16,22 @@ import {
   TransactionRow,
   useGetActiveTransactionsQuery,
 } from '../../../../generated/graphql';
-import { getSingleValueFromQuery } from '../../../../utils/url';
 import { GiMagnifyingGlass } from 'react-icons/gi';
 import { useState } from 'react';
 import MoreInfoModal from '../../../../components/molecules/transaction/MoreInfoModal';
 
 const TransactionPage = () => {
-  const { query } = useRouter();
   const [transactionInModal, setTransactionInModal] =
     useState<TransactionRow>();
 
+  const { game } = useCurrentGameContext();
+
   const { data } = useGetActiveTransactionsQuery({
     variables: {
-      gameId: parseInt(getSingleValueFromQuery(query, 'id') ?? '0', 10),
+      gameId: game?.id ?? 0,
     },
   });
+
   return (
     <SidebarLayout>
       <Card h="full">
