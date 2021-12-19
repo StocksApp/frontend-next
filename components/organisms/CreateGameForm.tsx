@@ -25,6 +25,7 @@ import { useRouter } from 'next/router';
 import {
   useCreateGameMutation,
   useGetMarketsQuery,
+  GetUserGamesDocument,
 } from '../../generated/graphql';
 import { formatISO, parse } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
@@ -57,7 +58,9 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   } = useForm<CreateGameFormValues>();
   const { push } = useRouter();
 
-  const [createGame, { loading }] = useCreateGameMutation();
+  const [createGame, { loading }] = useCreateGameMutation({
+    refetchQueries: [GetUserGamesDocument],
+  });
   const { data: marketsQueryData } = useGetMarketsQuery();
   const stocks = marketsQueryData?.stocksSummary || [];
 

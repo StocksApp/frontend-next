@@ -62,7 +62,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
                         <NavLinkItem
                           href={
                             typeof subLink.href === 'function'
-                              ? subLink.href(`${currentGame || ''}`)
+                              ? subLink.href(`${currentGame?.id || ''}`)
                               : subLink.href
                           }
                           key={index}
