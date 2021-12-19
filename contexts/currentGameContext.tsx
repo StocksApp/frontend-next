@@ -27,8 +27,6 @@ export const CurrentGameContextProvider = ({
   children: ReactNode;
 }) => {
   const [gameId, setGameId] = useState<number | null>(null);
-  const x: number | null = null;
-  console.log(x + 10);
 
   const refresh = useCallback((gameId: number) => {
     setGameId(gameId);

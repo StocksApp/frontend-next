@@ -7,14 +7,14 @@ import { getSingleValueFromQuery } from '../../../../utils/url';
 const CreateTransactionPage = () => {
   const { push, query } = useRouter();
 
-  const gameId = parseInt(getSingleValueFromQuery(query, 'id'), 10);
+  const gameId = getSingleValueFromQuery(query, 'id');
 
   if (!gameId) return null;
 
   return (
     <SidebarLayout>
       <Card h="full">
-        <CreateTransactionForm gameId={gameId} />
+        <CreateTransactionForm gameId={parseInt(gameId, 10)} />
       </Card>
     </SidebarLayout>
   );

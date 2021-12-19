@@ -1,12 +1,14 @@
 import { Heading, HStack, VStack, Text, Button } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { GameRow, WalletSummary } from '../../generated/graphql';
+import { GameRow, SecuritiesRow, WalletSummary } from '../../generated/graphql';
 import { Card } from '../molecules';
 
 type WalletInfoCardType = {
   game: Omit<GameRow, 'ownerId' | 'private'>;
-  walletInfo: WalletSummary;
+  walletInfo: Omit<WalletSummary, 'ownedSecurities'> & {
+    ownedSecurities: Array<Omit<SecuritiesRow, 'id' | 'walletId'>>;
+  };
 };
 
 const WalletInfoCard = ({ game, walletInfo }: WalletInfoCardType) => {

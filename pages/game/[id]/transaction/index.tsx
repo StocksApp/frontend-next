@@ -28,7 +28,7 @@ const TransactionPage = () => {
 
   const { data } = useGetActiveTransactionsQuery({
     variables: {
-      gameId: parseInt(getSingleValueFromQuery(query, 'id'), 10),
+      gameId: parseInt(getSingleValueFromQuery(query, 'id') ?? '0', 10),
     },
   });
   return (
@@ -65,7 +65,7 @@ const TransactionPage = () => {
       </Card>
       <MoreInfoModal
         transactionInModal={transactionInModal}
-        onClose={() => setTransactionInModal(null)}
+        onClose={() => setTransactionInModal(undefined)}
       />
     </SidebarLayout>
   );
