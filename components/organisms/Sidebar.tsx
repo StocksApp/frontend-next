@@ -48,7 +48,7 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          StocksApp
         </Text>
         {/* <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} /> */}
       </Flex>
@@ -72,7 +72,7 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
     <Drawer isOpen={isOpen} placement="left" onClose={onClose} isFullHeight>
       <DrawerOverlay>
         <DrawerContent>
-          <DrawerHeader>Logo</DrawerHeader>
+          <DrawerHeader>StocksApp</DrawerHeader>
           <DrawerCloseButton />
           <Box p={4}>
             <Text>Wybierz grę:</Text>

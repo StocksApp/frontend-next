@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import {
   Input,
@@ -10,7 +10,6 @@ import {
   VStack,
   Table,
   Thead,
-  TableCaption,
   Tr,
   Th,
   Td,
@@ -20,36 +19,73 @@ import {
 import Card from '../molecules/Card';
 import {
   useGetMarketsQuery,
-  useGetTickersLazyQuery,
+  useGetTickersMarkingsLazyQuery,
 } from '../../generated/graphql';
 import { SearchIcon } from '@chakra-ui/icons';
 import NextLink from 'next/link';
 import { links } from '../../config/urls';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
+import { format, addDays } from 'date-fns';
 
 // export type StocksCardProps = {};
 
 type SearchbarFormValues = {
   market: string;
   ticker: string;
+  date: string;
 };
 
 const StocksCard = () => {
-  const { register, handleSubmit, getValues } = useForm();
-  const { data: markets } = useGetMarketsQuery();
-  const [getTickers, { data: tickers, loading }] = useGetTickersLazyQuery();
+  const { game } = useCurrentGameContext();
+
+  const { register, handleSubmit, getValues, setValue } = useForm();
+  const { data: marketsData } = useGetMarketsQuery();
+  const [getTickers, { data: tickers, loading }] =
+    useGetTickersMarkingsLazyQuery();
 
   const onSubmit = (formValues: SearchbarFormValues) => {
     getTickers({
       variables: {
-        stocks: [formValues.market],
+        stock: formValues.market,
+        tickers: formValues.ticker ? [formValues.ticker] : [],
+        startDate: formValues.date,
+        endDate: format(addDays(new Date(formValues.date), 1), 'yyyy-MM-dd'),
       },
     });
   };
 
+  useEffect(() => {
+    if (game) {
+      setValue('date', game.currentDate);
+    }
+  }, [game, setValue]);
+
+  const markets = useMemo(() => {
+    return game
+      ? marketsData?.stocksSummary.filter((m) =>
+          game.markets.map((gm) => gm.name).includes(m.name)
+        )
+      : marketsData?.stocksSummary;
+  }, [game, marketsData]);
+
   const tickersForCurrentMarket =
-    tickers?.stocksSummary &&
-    tickers.stocksSummary.length > 0 &&
-    tickers.stocksSummary[0].securities;
+    tickers?.getManyMarkings &&
+    tickers.getManyMarkings.length > 0 &&
+    tickers.getManyMarkings;
+
+  useEffect(() => {
+    if (game && markets) {
+      setValue('market', markets[0].name);
+      getTickers({
+        variables: {
+          stock: markets[0].name,
+          tickers: [],
+          startDate: game.currentDate,
+          endDate: format(addDays(new Date(game.currentDate), 1), 'yyyy-MM-dd'),
+        },
+      });
+    }
+  }, [markets, game, getTickers, setValue]);
 
   return (
     <Card>
@@ -57,13 +93,8 @@ const StocksCard = () => {
         <VStack>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Flex wrap="wrap" gridGap={2}>
-              <Select
-                placeholder="Wybierz rynek"
-                {...register('market')}
-                minW="150px"
-                flex={1}
-              >
-                {markets?.stocksSummary.map((summary, index) => (
+              <Select {...register('market')} minW="250px" flex={1}>
+                {markets?.map((summary, index) => (
                   <option key={index} value={summary.name}>
                     {summary.readableName}
                   </option>
@@ -71,12 +102,17 @@ const StocksCard = () => {
               </Select>
               <Input
                 {...register('ticker')}
-                placeholder="Podaj tickera"
+                placeholder="Podaj ticker"
                 minW="200px"
                 flex={1}
               />
-              <Input type="date" {...register('from')} minW="150px" flex={1} />
-              <Input type="date" {...register('to')} minW="150px" flex={1} />
+              <Input
+                type="date"
+                max={game?.currentDate || format(Date.now(), 'yyyy-MM-dd')}
+                {...register('date')}
+                minW="150px"
+                flex={1}
+              />
               <Button type="submit" isLoading={loading} px={20} py={2} flex={1}>
                 <Text mr={2}>Szukaj</Text>
                 <SearchIcon />
@@ -85,7 +121,6 @@ const StocksCard = () => {
           </form>
           <Box>
             <Table variant="striped">
-              <TableCaption>Uproszczony widok notowań</TableCaption>
               <Thead>
                 <Tr>
                   <Th>Ticker</Th>
@@ -98,26 +133,26 @@ const StocksCard = () => {
               </Thead>
               <Tbody>
                 {tickersForCurrentMarket &&
-                  tickersForCurrentMarket.map((ticker, index) => (
+                  tickersForCurrentMarket.map(({ marking }, index) => (
                     <Tr key={index}>
                       <Td>
                         <NextLink
                           href={{
                             pathname: links.stocks.analysis,
                             query: {
-                              ticker: ticker.ticker,
+                              ticker: marking.ticker,
                               market: getValues('market'),
                             },
                           }}
                         >
-                          <Link color="teal.500">{ticker.ticker}</Link>
+                          <Link color="teal.500">{marking.ticker}</Link>
                         </NextLink>
                       </Td>
-                      <Td>{2}</Td>
-                      <Td>{4}</Td>
-                      <Td>{1}</Td>
-                      <Td>{3}</Td>
-                      <Td>{1}</Td>
+                      <Td>{marking.open}</Td>
+                      <Td>{marking.high}</Td>
+                      <Td>{marking.low}</Td>
+                      <Td>{marking.close}</Td>
+                      <Td>{marking.volume}</Td>
                     </Tr>
                   ))}
               </Tbody>

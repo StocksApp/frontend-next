@@ -1,6 +1,7 @@
 query getTickers($stocks: [String!]) {
   stocksSummary(stocks: $stocks) {
     name
+    readableName
     securities {
       ticker
     }

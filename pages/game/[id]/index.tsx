@@ -1,24 +1,20 @@
-import { HStack, Button, VStack, Text } from '@chakra-ui/react';
+import { HStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import SidebarLayout from '../../../components/layouts/SidebarLayout';
 import { Card } from '../../../components/molecules';
 import GenericTablePanel from '../../../components/molecules/GenericTablePanel';
 import { links } from '../../../config/urls';
-import { GiMagnifyingGlass } from 'react-icons/gi';
 import GameInfoCard from '../../../components/organisms/GameInfoCard';
-import {
-  useGetUserGamesQuery,
-  useMarketsNamesQuery,
-} from '../../../generated/graphql';
+import { useMarketsNamesQuery } from '../../../generated/graphql';
 import StrategyModal from '../../../components/organisms/StrategyModal';
+import { useCurrentGameContext } from '../../../contexts/currentGameContext';
 
 const GameOverview = () => {
   const { query, push } = useRouter();
-  const gameId = parseInt(query.id as string, 10);
-  const { data } = useGetUserGamesQuery(); // TODO get only one game by id, get users in game in that query
-  const game = data?.getUsersGames?.filter((g) => g.id === gameId)?.at(0); // bleh
+  const gameIdParam = parseInt(query.id as string, 10);
+  const { gameId, game, changeGame } = useCurrentGameContext();
 
-  if (!gameId) push(links.game.browse);
+  if (!gameIdParam) push(links.game.browse);
 
   const { data: marketsNames } = useMarketsNamesQuery({
     variables: {
@@ -26,9 +22,17 @@ const GameOverview = () => {
     },
   });
 
+  if (gameIdParam !== gameId) {
+    changeGame(gameIdParam);
+  }
+
   const markets = marketsNames?.stocksSummary;
 
   if (!game || !markets) return null;
+
+  if (game && game.isStarted) {
+    push(links.game.wallet.base(String(gameIdParam)));
+  }
 
   return (
     <SidebarLayout>

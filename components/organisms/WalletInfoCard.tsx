@@ -1,5 +1,4 @@
-import { Heading, HStack, VStack, Text, Button } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
+import { Heading, HStack, VStack, Text } from '@chakra-ui/react';
 import React from 'react';
 import { GameRow, WalletSummary } from '../../generated/graphql';
 import { Card } from '../molecules';
@@ -10,16 +9,6 @@ type WalletInfoCardType = {
 };
 
 const WalletInfoCard = ({ game, walletInfo }: WalletInfoCardType) => {
-  //   const [startGame] = useStartGameMutation(); run next turn
-  const { push } = useRouter();
-
-  const handleButtonClick = async (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    // await startGame({ variables: { gameId: game.id } });
-    console.log('next turn ,  ', game.id);
-    // push(`/game/${game.id}/wallet`);
-  };
-
   return (
     <Card>
       <VStack>
@@ -39,7 +28,6 @@ const WalletInfoCard = ({ game, walletInfo }: WalletInfoCardType) => {
             <Text>Zablokowane środki</Text>
             <Text>{walletInfo.blockedMoney.toFixed(2)}</Text>
           </HStack>
-          <Button onClick={handleButtonClick}>Następna tura</Button>
         </VStack>
       </VStack>
     </Card>
