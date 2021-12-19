@@ -66,18 +66,20 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
       <Box flex="0">
         <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
       </Box>
-      <HStack
-        p={4}
-        m={4}
-        borderRadius={10}
-        cursor="pointer"
-        alignItems="center"
-        _hover={{ background: 'cyan.100' }}
-        onClick={() => nextTurn({ variables: { gameId } })}
-      >
-        <Text>Next Turn</Text>
-        <GrCaretNext />
-      </HStack>
+      {gameId && (
+        <HStack
+          p={4}
+          m={4}
+          borderRadius={10}
+          cursor="pointer"
+          alignItems="center"
+          _hover={{ background: 'cyan.100' }}
+          onClick={() => nextTurn({ variables: { gameId } })}
+        >
+          <Text>Next Turn</Text>
+          <GrCaretNext />
+        </HStack>
+      )}
 
       <Flex alignItems={'center'}>
         <Menu>
