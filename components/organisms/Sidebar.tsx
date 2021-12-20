@@ -26,15 +26,13 @@ export type SidebarProps = {
 
 const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
   const isDrawer = useBreakpointValue({ base: true, md: false });
-  const { gameId, changeGame } = useCurrentGameContext();
-
+  const { game } = useCurrentGameContext();
   const { data } = useGetUserGamesQuery();
   const games = data?.getUsersGames?.map((g) => g.id) || [];
 
   const { push } = useRouter();
 
   const handleGameSelection = (id: number) => {
-    changeGame(id);
     push(`/game/${id}`);
   };
 
@@ -54,7 +52,7 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
       </Flex>
       <Box p={4}>
         <Text>Wybierz grę:</Text>
-        <Select defaultValue={gameId || 'Poza rozgrywką'}>
+        <Select defaultValue={game?.id || 'Poza rozgrywką'}>
           {games.map((game, index) => (
             <option
               value={game}

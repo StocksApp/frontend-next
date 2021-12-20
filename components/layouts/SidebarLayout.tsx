@@ -21,7 +21,7 @@ export type SidebarLayoutProps = {
 
 const SidebarLayout = ({ children }: SidebarLayoutProps) => {
   const [open, setOpen] = useState(false);
-  const { gameId: currentGame } = useCurrentGameContext();
+  const { game: currentGame } = useCurrentGameContext();
   const gridSettings = useBreakpointValue({
     base: {
       templateAreas: `'header' 'content'`,
@@ -62,7 +62,7 @@ const SidebarLayout = ({ children }: SidebarLayoutProps) => {
                         <NavLinkItem
                           href={
                             typeof subLink.href === 'function'
-                              ? subLink.href(`${currentGame || ''}`)
+                              ? subLink.href(`${currentGame?.id || ''}`)
                               : subLink.href
                           }
                           key={index}

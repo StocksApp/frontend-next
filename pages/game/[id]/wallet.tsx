@@ -96,4 +96,6 @@ const WalletOverview = () => {
   );
 };
 
+WalletOverview.auth = true;
+
 export default WalletOverview;

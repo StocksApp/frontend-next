@@ -21,7 +21,9 @@ import { links } from '../../config/urls';
 import { signOut, useSession } from 'next-auth/react';
 import {
   GetActiveTransactionsDocument,
+  GetWalletSummaryDocument,
   useEndTurnMutation,
+  GetUserGamesDocument,
 } from '../../generated/graphql';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
@@ -32,10 +34,18 @@ export type HeaderProps = FlexProps & {
 const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { data: session } = useSession();
+  const { game } = useCurrentGameContext();
+
   const [nextTurn] = useEndTurnMutation({
-    refetchQueries: [GetActiveTransactionsDocument],
+    refetchQueries: [
+      {
+        query: GetActiveTransactionsDocument,
+        variables: { gameId: game?.id ?? 0 },
+      },
+      { query: GetWalletSummaryDocument, variables: { gameId: game?.id ?? 0 } },
+      { query: GetUserGamesDocument },
+    ],
   });
-  const { gameId, game } = useCurrentGameContext();
 
   return (
     <Flex
@@ -73,7 +83,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           cursor="pointer"
           alignItems="center"
           _hover={{ background: 'cyan.100' }}
-          onClick={() => nextTurn({ variables: { gameId } })}
+          onClick={() => nextTurn({ variables: { gameId: game.id } })}
         >
           <Button>Następna tura</Button>
         </HStack>

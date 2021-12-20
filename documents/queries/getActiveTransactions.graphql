@@ -5,6 +5,7 @@ query getActiveTransactions($gameId: Int!) {
     minQuantity
     priceLimit
     quantity
+    activationLimit
     to
     ticker
     isFullified

@@ -1,20 +1,17 @@
-import { useRouter } from 'next/router';
 import SidebarLayout from '../../../../components/layouts/SidebarLayout';
 import { Card } from '../../../../components/molecules';
 import CreateTransactionForm from '../../../../components/organisms/CreateTransactionForm';
-import { getSingleValueFromQuery } from '../../../../utils/url';
+import { Heading } from '@chakra-ui/react';
+import { useCurrentGameContext } from '../../../../contexts/currentGameContext';
 
 const CreateTransactionPage = () => {
-  const { push, query } = useRouter();
-
-  const gameId = parseInt(getSingleValueFromQuery(query, 'id'), 10);
-
-  if (!gameId) return null;
-
+  const { game } = useCurrentGameContext();
+  if (!game) return null;
   return (
     <SidebarLayout>
       <Card h="full">
-        <CreateTransactionForm gameId={gameId} />
+        <Heading marginBottom="8">Stwórz transakcję</Heading>
+        <CreateTransactionForm game={game} />
       </Card>
     </SidebarLayout>
   );

@@ -307,7 +307,11 @@ export type CreateTransactionMutationVariables = Exact<{
   market: Scalars['String'];
   ticker: Scalars['String'];
   from: Scalars['LocalDate'];
+  to?: Maybe<Scalars['LocalDate']>;
   quantity: Scalars['Int'];
+  minQuantity?: Maybe<Scalars['Int']>;
+  priceLimit?: Maybe<Scalars['Float']>;
+  activationLimit?: Maybe<Scalars['Float']>;
 }>;
 
 
@@ -357,7 +361,7 @@ export type GetActiveTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type GetActiveTransactionsQuery = { __typename?: 'Query', getUserTransactions: Array<{ __typename?: 'TransactionRow', from: string, isSellTransaction: boolean, minQuantity?: number | null | undefined, priceLimit?: number | null | undefined, quantity: number, to?: string | null | undefined, ticker: string, isFullified: boolean, isCancelled: boolean, id: number }> };
+export type GetActiveTransactionsQuery = { __typename?: 'Query', getUserTransactions: Array<{ __typename?: 'TransactionRow', from: string, isSellTransaction: boolean, minQuantity?: number | null | undefined, priceLimit?: number | null | undefined, quantity: number, activationLimit?: number | null | undefined, to?: string | null | undefined, ticker: string, isFullified: boolean, isCancelled: boolean, id: number }> };
 
 export type GetMarketsQueryVariables = Exact<{
   stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
@@ -509,14 +513,18 @@ export type CreateStrategyMutationHookResult = ReturnType<typeof useCreateStrate
 export type CreateStrategyMutationResult = Apollo.MutationResult<CreateStrategyMutation>;
 export type CreateStrategyMutationOptions = Apollo.BaseMutationOptions<CreateStrategyMutation, CreateStrategyMutationVariables>;
 export const CreateTransactionDocument = gql`
-    mutation createTransaction($gameId: Int!, $isSell: Boolean!, $market: String!, $ticker: String!, $from: LocalDate!, $quantity: Int!) {
+    mutation createTransaction($gameId: Int!, $isSell: Boolean!, $market: String!, $ticker: String!, $from: LocalDate!, $to: LocalDate, $quantity: Int!, $minQuantity: Int, $priceLimit: Float, $activationLimit: Float) {
   addTransactionDefinition(
     gameId: $gameId
     isSellTransaction: $isSell
     marketName: $market
     ticker: $ticker
     startDate: $from
+    endDate: $to
     quantity: $quantity
+    minQuantity: $minQuantity
+    priceLimit: $priceLimit
+    activationLimit: $activationLimit
   ) {
     from
     id
@@ -543,7 +551,11 @@ export type CreateTransactionMutationFn = Apollo.MutationFunction<CreateTransact
  *      market: // value for 'market'
  *      ticker: // value for 'ticker'
  *      from: // value for 'from'
+ *      to: // value for 'to'
  *      quantity: // value for 'quantity'
+ *      minQuantity: // value for 'minQuantity'
+ *      priceLimit: // value for 'priceLimit'
+ *      activationLimit: // value for 'activationLimit'
  *   },
  * });
  */
@@ -747,6 +759,7 @@ export const GetActiveTransactionsDocument = gql`
     minQuantity
     priceLimit
     quantity
+    activationLimit
     to
     ticker
     isFullified

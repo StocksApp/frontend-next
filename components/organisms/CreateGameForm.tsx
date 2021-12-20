@@ -25,13 +25,12 @@ import {
   useCreateGameMutation,
   useGetMarketsQuery,
   useStocksSummaryLazyQuery,
+  GetUserGamesDocument,
 } from '../../generated/graphql';
-import { parse } from 'date-fns';
+import { compareAsc, parse, compareDesc } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
 // import { User } from '../../utils/interfaces';
 import { links } from '../../config/urls';
-// import GenericTablePanel from '../molecules/GenericTablePanel';
-// import { FaTimes } from 'react-icons/fa';
 
 type CreateGameFormValues = {
   from: string;
@@ -58,13 +57,15 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   } = useForm<CreateGameFormValues>();
   const { push } = useRouter();
 
-  const [createGame, { loading }] = useCreateGameMutation();
+  const [createGame, { loading }] = useCreateGameMutation({
+    refetchQueries: [GetUserGamesDocument],
+  });
   const { data: marketsQueryData } = useGetMarketsQuery();
   const [getMarketsSummary, { data: marketsDates }] =
     useStocksSummaryLazyQuery();
 
-  const [minDate, setMinDate] = useState(null);
-  const [maxDate, setMaxDate] = useState(null);
+  const [minDate, setMinDate] = useState<string | undefined>(undefined);
+  const [maxDate, setMaxDate] = useState<string | undefined>(undefined);
 
   const stocks = marketsQueryData?.stocksSummary || [];
 
@@ -81,8 +82,8 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
         },
       });
     } else {
-      setMinDate(null);
-      setMaxDate(null);
+      setMinDate(undefined);
+      setMaxDate(undefined);
     }
   }, [markets, getMarketsSummary]);
 
@@ -92,10 +93,12 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
       const startDates = stocksSummary.map((s) => s.startDate);
       const endDates = stocksSummary.map((s) => s.endDate);
 
-      const newMinDate = startDates.sort(
-        (a, b) => new Date(b) - new Date(a)
+      const newMinDate = startDates.sort((a, b) =>
+        compareDesc(new Date(a), new Date(b))
       )[0];
-      const newMaxDate = endDates.sort((a, b) => new Date(a) - new Date(b))[0];
+      const newMaxDate = endDates.sort((a, b) =>
+        compareAsc(new Date(a), new Date(b))
+      )[0];
 
       setMinDate(newMinDate);
       setValue('from', newMinDate);
