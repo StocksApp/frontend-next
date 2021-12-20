@@ -73,7 +73,11 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
       )}
       <Spacer />
       <Box flex="0">
-        <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
+        <NavLinkItem
+          href={links.stocks.browse + (game ? `?id=${game?.id}` : '')}
+        >
+          Notowania
+        </NavLinkItem>
       </Box>
       {game && game.isStarted && !game.isFinished && (
         <HStack

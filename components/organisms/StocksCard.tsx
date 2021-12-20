@@ -144,6 +144,7 @@ const StocksCard = () => {
                             query: {
                               ticker: marking.ticker,
                               market: getValues('market'),
+                              ...(game?.id ? { id: game?.id } : {}),
                             },
                           }}
                         >

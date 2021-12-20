@@ -76,23 +76,32 @@ const WalletMarketsChartsCard = ({
 
   return (
     isClient && (
-      <Card mt={5}>
-        <Heading>Podział aktywów pomiędzy rynki</Heading>
+      <Card>
+        <Heading size="md">Podział aktywów pomiędzy rynki</Heading>
         <HStack>
           <ReactApexChart
-            options={{ labels, title: { text: 'Ilość aktywu na rynku' } }}
+            options={{
+              labels,
+              title: { text: 'Ilość aktywu na rynku' },
+              legend: {
+                show: false,
+              },
+            }}
             series={series}
             type="donut"
-            width="380"
+            width="200"
           />
           <ReactApexChart
             options={{
               labels: valueLabels,
               title: { text: 'Wartość na rynku' },
+              legend: {
+                show: false,
+              },
             }}
             series={valueSeries}
             type="donut"
-            width="380"
+            width="200"
           />
         </HStack>
       </Card>

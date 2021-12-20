@@ -1,6 +1,12 @@
-import { Container, HStack, SimpleGrid, VStack } from '@chakra-ui/react';
+import {
+  Container,
+  GridItem,
+  HStack,
+  SimpleGrid,
+  VStack,
+} from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import SidebarLayout from '../../../components/layouts/SidebarLayout';
 import WalletInfoCard from '../../../components/organisms/WalletInfoCard';
 import {
@@ -70,28 +76,41 @@ const WalletOverview = () => {
 
   return (
     <SidebarLayout>
-      <VStack>
-        <HStack>
+      <SimpleGrid
+        columns={2}
+        maxH={window.innerHeight - 100}
+        overflow="scroll"
+        gap={5}
+        justifyItems="stretch"
+        alignContent="stretch"
+      >
+        <GridItem height="full" placeSelf="stretch">
           <WalletInfoCard game={game} walletInfo={walletData.getUserWallet} />
+        </GridItem>
+        <GridItem height="full" placeSelf="stretch">
           <WalletMarketsChartsCard
             walletData={walletData}
             marketsData={marketsData}
           />
-        </HStack>
-        <WalletTableCard walletData={walletData} marketsData={marketsData} />
-
+        </GridItem>
+        <GridItem colSpan={2} height="full" placeSelf="stretch">
+          <WalletTableCard walletData={walletData} marketsData={marketsData} />
+        </GridItem>
         {Array.from(byMarkets).map(([marketName, marketInfo]) => (
-          <WalletSecuritesCharts
-            key={marketName}
-            marketName={
-              marketsData.stocksSummary.find((m) => m.name === marketName)
-                .readableName
-            }
-            securitiesInfo={marketInfo}
-            markingsForTicker={markingForTicker}
-          />
+          <GridItem key={marketName} height="full" placeSelf="stretch">
+            <WalletSecuritesCharts
+              marketName={
+                marketsData.stocksSummary.find((m) => m.name === marketName)
+                  .readableName
+              }
+              securitiesInfo={marketInfo}
+              markingsForTicker={markingForTicker}
+            />
+          </GridItem>
         ))}
-      </VStack>
+      </SimpleGrid>
+
+      <VStack></VStack>
     </SidebarLayout>
   );
 };

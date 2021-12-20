@@ -30,20 +30,20 @@ const WalletSecuritesCharts = ({
 
   return (
     isClient && (
-      <Card mt={5}>
-        <Heading>Podział aktywów w obrębie {marketName}</Heading>
+      <Card h="full">
+        <Heading size="md">Podział aktywów w obrębie {marketName}</Heading>
         <HStack>
           <ReactApexChart
             options={{ labels, title: { text: 'Ilość aktywu' } }}
             series={series}
             type="donut"
-            width="380"
+            width="250"
           />
           <ReactApexChart
             options={{ labels, title: { text: 'Szacowana wartość' } }}
             series={valueSeries}
             type="donut"
-            width="380"
+            width="250"
           />
         </HStack>
       </Card>

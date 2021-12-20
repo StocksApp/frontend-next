@@ -8,6 +8,7 @@ import {
   GetWalletSummaryQuery,
 } from '../../generated/graphql';
 import MicroChart from '../molecules/MicroChart';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 const WalletTableCard = ({
   walletData,
@@ -16,6 +17,7 @@ const WalletTableCard = ({
   walletData: GetWalletSummaryQuery;
   marketsData: GetMarketsQuery;
 }) => {
+  const { game } = useCurrentGameContext();
   const lastMarkingsDate = walletData.getUserWallet.markings?.at(-1)?.date;
 
   const markings = walletData.getUserWallet.markings.filter(
@@ -74,6 +76,7 @@ const WalletTableCard = ({
                     query: {
                       ticker: s.ticker,
                       market: s.market,
+                      ...(game?.id ? { id: game?.id } : {}),
                     },
                   }}
                 >
