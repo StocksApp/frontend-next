@@ -2,6 +2,7 @@ type GameParticipationRow {
   clickedNextTurn: Boolean!
   gameId: Int!
   id: Int!
+  nextTurnClicked: Boolean!
   userId: Int!
 }
 
@@ -127,5 +128,6 @@ type UserStrategyRow {
 type WalletSummary {
   availableMoney: Float!
   blockedMoney: Float!
+  markings: [MarkingAtDay!]!
   ownedSecurities: [SecuritiesRow!]!
 }

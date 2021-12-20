@@ -1,0 +1,48 @@
+import React from 'react';
+import { Heading, HStack } from '@chakra-ui/react';
+import Card from '../molecules/Card';
+import Chart from 'react-apexcharts';
+
+type TMarketEntry = { ticker: string; market: string; quantity: number };
+
+const WalletSecuritesCharts = ({
+  marketName,
+  securitiesInfo,
+  markingsForTicker,
+}: {
+  marketName: string;
+  securitiesInfo: TMarketEntry[];
+  markingsForTicker: Map<string, number>;
+}) => {
+  const labels = [];
+  const series = [];
+  const valueSeries = [];
+
+  securitiesInfo.forEach((s) => {
+    labels.push(s.ticker);
+    series.push(s.quantity);
+    valueSeries.push(s.quantity * markingsForTicker.get(s.ticker));
+  });
+
+  return (
+    <Card mt={5}>
+      <Heading>Podział aktywów w obrębie {marketName}</Heading>
+      <HStack>
+        <Chart
+          options={{ labels, title: { text: 'Ilość aktywu' } }}
+          series={series}
+          type="donut"
+          width="380"
+        />
+        <Chart
+          options={{ labels, title: { text: 'Szacowana wartość' } }}
+          series={valueSeries}
+          type="donut"
+          width="380"
+        />
+      </HStack>
+    </Card>
+  );
+};
+
+export default WalletSecuritesCharts;

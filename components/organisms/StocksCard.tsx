@@ -71,7 +71,9 @@ const StocksCard = () => {
   const tickersForCurrentMarket =
     tickers?.getManyMarkings &&
     tickers.getManyMarkings.length > 0 &&
-    tickers.getManyMarkings;
+    [...tickers.getManyMarkings].sort((a, b) =>
+      a.marking.ticker.localeCompare(b.marking.ticker)
+    );
 
   useEffect(() => {
     if (game && markets) {

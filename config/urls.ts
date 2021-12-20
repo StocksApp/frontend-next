@@ -61,6 +61,20 @@ export const sidebarMenuLinks: Record<
       },
     ],
   },
+  wallet: {
+    name: 'Portfel',
+    href: links.game.wallet.base,
+    links: [
+      {
+        name: 'Przeglądaj',
+        href: links.game.wallet.overview,
+      },
+      // {
+      //   name: 'Analiza',
+      //   href: links.game.wallet.analysis,
+      // },
+    ],
+  },
   transactions: {
     name: 'Transakcje',
     href: links.game.transactions.base,
@@ -76,20 +90,6 @@ export const sidebarMenuLinks: Record<
       {
         name: 'Historia',
         href: links.game.transactions.history,
-      },
-    ],
-  },
-  wallet: {
-    name: 'Portfel',
-    href: links.game.wallet.base,
-    links: [
-      {
-        name: 'Przeglądaj',
-        href: links.game.wallet.overview,
-      },
-      {
-        name: 'Analiza',
-        href: links.game.wallet.analysis,
       },
     ],
   },
