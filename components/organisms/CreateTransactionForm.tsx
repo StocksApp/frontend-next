@@ -35,8 +35,6 @@ import { validateDatesOrder, validateDate } from '../../utils/form';
 import { links } from '../../config/urls';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
 import CustomRadioGroup from '../molecules/transaction/GameTypeRadio';
-// import GenericTablePanel from '../molecules/GenericTablePanel';
-// import { FaTimes } from 'react-icons/fa';
 
 type CreateTransactionFormValues = {
   from: string;
@@ -50,7 +48,11 @@ type CreateTransactionFormValues = {
   activationLimit?: number;
 };
 
-const CreateTransactionForm = ({ game }: { game: GameRow }) => {
+const CreateTransactionForm = ({
+  game,
+}: {
+  game: Omit<GameRow, 'ownerId' | 'private'>;
+}) => {
   const [selectedTab, setSelectedTab] = useState<number | null>(null);
 
   const {

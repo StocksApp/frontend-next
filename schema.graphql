@@ -61,6 +61,7 @@ type Mutation {
 
 type Query {
   getJoinableGames: [GameRow!]!
+  getManyMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, tickers: [String!]!): [MarkingAtDay!]!
   getMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, ticker: String!): [MarkingAtDay!]!
   getUserStrategies(gameId: Int!): [UserStrategyRow!]!
   getUserTransactions(gameId: Int!): [TransactionRow!]!

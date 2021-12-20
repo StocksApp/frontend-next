@@ -160,12 +160,21 @@ export type MutationStartGameArgs = {
 export type Query = {
   __typename?: 'Query';
   getJoinableGames: Array<GameRow>;
+  getManyMarkings: Array<MarkingAtDay>;
   getMarkings: Array<MarkingAtDay>;
   getUserStrategies: Array<UserStrategyRow>;
   getUserTransactions: Array<TransactionRow>;
   getUserWallet: WalletSummary;
   getUsersGames: Array<GameRow>;
   stocksSummary: Array<StockSummary>;
+};
+
+
+export type QueryGetManyMarkingsArgs = {
+  endDate?: Maybe<Scalars['LocalDate']>;
+  startDate?: Maybe<Scalars['LocalDate']>;
+  stock: Scalars['String'];
+  tickers: Array<Scalars['String']>;
 };
 
 
@@ -379,7 +388,17 @@ export type GetTickersQueryVariables = Exact<{
 }>;
 
 
-export type GetTickersQuery = { __typename?: 'Query', stocksSummary: Array<{ __typename?: 'StockSummary', name: string, securities: Array<{ __typename?: 'SecurityInfo', ticker: string }> }> };
+export type GetTickersQuery = { __typename?: 'Query', stocksSummary: Array<{ __typename?: 'StockSummary', name: string, readableName: string, securities: Array<{ __typename?: 'SecurityInfo', ticker: string }> }> };
+
+export type GetTickersMarkingsQueryVariables = Exact<{
+  stock: Scalars['String'];
+  tickers: Array<Scalars['String']> | Scalars['String'];
+  startDate?: Maybe<Scalars['LocalDate']>;
+  endDate?: Maybe<Scalars['LocalDate']>;
+}>;
+
+
+export type GetTickersMarkingsQuery = { __typename?: 'Query', getManyMarkings: Array<{ __typename?: 'MarkingAtDay', marking: { __typename?: 'Marking', close: number, high: number, low: number, open: number, ticker: string, volume: number } }> };
 
 export type GetUserGamesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -897,6 +916,7 @@ export const GetTickersDocument = gql`
     query getTickers($stocks: [String!]) {
   stocksSummary(stocks: $stocks) {
     name
+    readableName
     securities {
       ticker
     }
@@ -931,6 +951,56 @@ export function useGetTickersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type GetTickersQueryHookResult = ReturnType<typeof useGetTickersQuery>;
 export type GetTickersLazyQueryHookResult = ReturnType<typeof useGetTickersLazyQuery>;
 export type GetTickersQueryResult = Apollo.QueryResult<GetTickersQuery, GetTickersQueryVariables>;
+export const GetTickersMarkingsDocument = gql`
+    query getTickersMarkings($stock: String!, $tickers: [String!]!, $startDate: LocalDate, $endDate: LocalDate) {
+  getManyMarkings(
+    stock: $stock
+    tickers: $tickers
+    startDate: $startDate
+    endDate: $endDate
+  ) {
+    marking {
+      close
+      high
+      low
+      open
+      ticker
+      volume
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetTickersMarkingsQuery__
+ *
+ * To run a query within a React component, call `useGetTickersMarkingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetTickersMarkingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetTickersMarkingsQuery({
+ *   variables: {
+ *      stock: // value for 'stock'
+ *      tickers: // value for 'tickers'
+ *      startDate: // value for 'startDate'
+ *      endDate: // value for 'endDate'
+ *   },
+ * });
+ */
+export function useGetTickersMarkingsQuery(baseOptions: Apollo.QueryHookOptions<GetTickersMarkingsQuery, GetTickersMarkingsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetTickersMarkingsQuery, GetTickersMarkingsQueryVariables>(GetTickersMarkingsDocument, options);
+      }
+export function useGetTickersMarkingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetTickersMarkingsQuery, GetTickersMarkingsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetTickersMarkingsQuery, GetTickersMarkingsQueryVariables>(GetTickersMarkingsDocument, options);
+        }
+export type GetTickersMarkingsQueryHookResult = ReturnType<typeof useGetTickersMarkingsQuery>;
+export type GetTickersMarkingsLazyQueryHookResult = ReturnType<typeof useGetTickersMarkingsLazyQuery>;
+export type GetTickersMarkingsQueryResult = Apollo.QueryResult<GetTickersMarkingsQuery, GetTickersMarkingsQueryVariables>;
 export const GetUserGamesDocument = gql`
     query getUserGames {
   getUsersGames {

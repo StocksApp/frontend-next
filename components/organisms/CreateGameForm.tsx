@@ -1,4 +1,4 @@
-import React, { useState, ReactNode } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {
   SimpleGrid,
@@ -11,7 +11,6 @@ import {
   FormLabel,
   FormErrorMessage,
   GridItem,
-  Checkbox,
 } from '@chakra-ui/react';
 import {
   AutoComplete,
@@ -25,14 +24,13 @@ import { useRouter } from 'next/router';
 import {
   useCreateGameMutation,
   useGetMarketsQuery,
+  useStocksSummaryLazyQuery,
   GetUserGamesDocument,
 } from '../../generated/graphql';
-import { formatISO, parse } from 'date-fns';
+import { compareAsc, parse, compareDesc } from 'date-fns';
 import { validateDatesOrder, validateDate } from '../../utils/form';
 // import { User } from '../../utils/interfaces';
 import { links } from '../../config/urls';
-// import GenericTablePanel from '../molecules/GenericTablePanel';
-// import { FaTimes } from 'react-icons/fa';
 
 type CreateGameFormValues = {
   from: string;
@@ -55,6 +53,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
     watch,
     formState: { errors },
     control,
+    setValue,
   } = useForm<CreateGameFormValues>();
   const { push } = useRouter();
 
@@ -62,10 +61,51 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
     refetchQueries: [GetUserGamesDocument],
   });
   const { data: marketsQueryData } = useGetMarketsQuery();
+  const [getMarketsSummary, { data: marketsDates }] =
+    useStocksSummaryLazyQuery();
+
+  const [minDate, setMinDate] = useState<string | undefined>(undefined);
+  const [maxDate, setMaxDate] = useState<string | undefined>(undefined);
+
   const stocks = marketsQueryData?.stocksSummary || [];
 
   // const [invitedUsers, setInvitedUsers] = useState<User[]>([]);
   const fromDate = watch('from');
+
+  const markets = watch('stocks');
+
+  useEffect(() => {
+    if (markets?.length) {
+      getMarketsSummary({
+        variables: {
+          stocks: markets,
+        },
+      });
+    } else {
+      setMinDate(undefined);
+      setMaxDate(undefined);
+    }
+  }, [markets, getMarketsSummary]);
+
+  useEffect(() => {
+    if (marketsDates) {
+      const { stocksSummary } = marketsDates;
+      const startDates = stocksSummary.map((s) => s.startDate);
+      const endDates = stocksSummary.map((s) => s.endDate);
+
+      const newMinDate = startDates.sort((a, b) =>
+        compareDesc(new Date(a), new Date(b))
+      )[0];
+      const newMaxDate = endDates.sort((a, b) =>
+        compareAsc(new Date(a), new Date(b))
+      )[0];
+
+      setMinDate(newMinDate);
+      setValue('from', newMinDate);
+      setMaxDate(newMaxDate);
+      setValue('to', newMaxDate);
+    }
+  }, [marketsDates, setValue]);
 
   const onSubmit = async (values: CreateGameFormValues) => {
     try {
@@ -87,47 +127,6 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <SimpleGrid columnGap={16} rowGap={4} columns={{ base: 1, sm: 2 }}>
-        <FormControl isInvalid={!!errors.from}>
-          <FormLabel htmlFor="name">Data rozpoczęcia</FormLabel>{' '}
-          <Input
-            type="date"
-            max={formatISO(Date.now(), { representation: 'date' })}
-            {...register('from', {
-              deps: ['to'],
-              required: { value: true, message: 'To pole jest obowiązkowe' },
-              validate: (value) =>
-                validateDate(
-                  parse(value, 'y-MM-dd', new Date()),
-                  'Niepoprawny format daty'
-                ),
-            })}
-          />
-          <FormErrorMessage>{errors.from?.message}</FormErrorMessage>
-        </FormControl>
-        <FormControl isInvalid={!!errors.to}>
-          <FormLabel htmlFor="to">Data zakończenia</FormLabel>{' '}
-          <Input
-            type="date"
-            max={formatISO(Date.now(), { representation: 'date' })}
-            {...register('to', {
-              required: { value: true, message: 'To pole jest obowiązkowe' },
-              validate: {
-                validateCorrectness: (value) =>
-                  validateDate(
-                    parse(value, 'y-MM-dd', new Date()),
-                    'Niepoprawny format daty'
-                  ),
-                validateOrder: (value) =>
-                  validateDatesOrder(
-                    parse(fromDate, 'y-MM-dd', new Date()),
-                    parse(value, 'y-MM-dd', new Date()),
-                    'End date must be after start date'
-                  ),
-              },
-            })}
-          />
-          <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
-        </FormControl>
         <FormControl isInvalid={!!errors.initialWallet}>
           <FormLabel htmlFor="initialWallet">
             Początkowa wartość portfela
@@ -197,6 +196,7 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
                         textTransform="capitalize"
                         _selected={{ bg: 'cyan.500' }}
                         _focus={{ bg: 'cyan.200' }}
+                        label={stock.readableName}
                       >
                         {stock.readableName}
                       </AutoCompleteItem>
@@ -207,6 +207,51 @@ const CreateGameForm = ({ single }: CreateGameFormType) => {
             )}
           />
         </GridItem>
+        <FormControl isInvalid={!!errors.from}>
+          <FormLabel htmlFor="name">Data rozpoczęcia</FormLabel>{' '}
+          <Input
+            type="date"
+            disabled={!maxDate && !minDate}
+            max={maxDate}
+            min={minDate}
+            {...register('from', {
+              deps: ['to'],
+              required: { value: true, message: 'To pole jest obowiązkowe' },
+              validate: (value) =>
+                validateDate(
+                  parse(value, 'y-MM-dd', new Date()),
+                  'Niepoprawny format daty'
+                ),
+            })}
+          />
+          <FormErrorMessage>{errors.from?.message}</FormErrorMessage>
+        </FormControl>
+        <FormControl isInvalid={!!errors.to}>
+          <FormLabel htmlFor="to">Data zakończenia</FormLabel>{' '}
+          <Input
+            type="date"
+            disabled={!maxDate && !minDate}
+            max={maxDate}
+            min={minDate}
+            {...register('to', {
+              required: { value: true, message: 'To pole jest obowiązkowe' },
+              validate: {
+                validateCorrectness: (value) =>
+                  validateDate(
+                    parse(value, 'y-MM-dd', new Date()),
+                    'Niepoprawny format daty'
+                  ),
+                validateOrder: (value) =>
+                  validateDatesOrder(
+                    parse(fromDate, 'y-MM-dd', new Date()),
+                    parse(value, 'y-MM-dd', new Date()),
+                    'End date must be after start date'
+                  ),
+              },
+            })}
+          />
+          <FormErrorMessage>{errors.to?.message}</FormErrorMessage>
+        </FormControl>
         {/* {!single && (
           <>
             <GridItem colSpan={2}>

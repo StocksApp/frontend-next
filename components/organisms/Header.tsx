@@ -12,14 +12,13 @@ import {
   MenuItem,
   Box,
   Spacer,
+  Button,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { FiChevronDown } from 'react-icons/fi';
-import { useRouter } from 'next/router';
 import { NavLinkItem } from '../molecules';
 import { links } from '../../config/urls';
 import { signOut, useSession } from 'next-auth/react';
-import { GrCaretNext } from 'react-icons/gr';
 import {
   GetActiveTransactionsDocument,
   useEndTurnMutation,
@@ -36,6 +35,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
   const [nextTurn] = useEndTurnMutation({
     refetchQueries: [GetActiveTransactionsDocument],
   });
+
   const { game } = useCurrentGameContext();
 
   return (
@@ -58,7 +58,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           />
 
           <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-            Logo
+            StocksApp
           </Text>
         </>
       )}
@@ -66,7 +66,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
       <Box flex="0">
         <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
       </Box>
-      {game && (
+      {game && game.isStarted && !game.isFinished && (
         <HStack
           p={4}
           m={4}
@@ -76,11 +76,9 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           _hover={{ background: 'cyan.100' }}
           onClick={() => nextTurn({ variables: { gameId: game.id } })}
         >
-          <Text>Next Turn</Text>
-          <GrCaretNext />
+          <Button>Następna tura</Button>
         </HStack>
       )}
-
       <Flex alignItems={'center'}>
         <Menu>
           <MenuButton

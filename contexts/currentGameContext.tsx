@@ -6,6 +6,7 @@ import {
   ReactNode,
   useContext,
 } from 'react';
+
 import { GameRow, useGetUserGamesQuery } from '../generated/graphql';
 import { getSingleValueFromQuery } from '../utils/url';
 
@@ -28,7 +29,6 @@ export const CurrentGameContextProvider = ({
     Omit<GameRow, 'ownerId' | 'private'> | undefined
   >(undefined);
   const { data } = useGetUserGamesQuery(); // TODO get only one game by id, get users in game in that query
-
   const { query } = useRouter();
   const gameIdFromQuery = getSingleValueFromQuery(query, 'id');
 
