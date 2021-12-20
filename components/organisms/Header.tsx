@@ -35,7 +35,8 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
   const [nextTurn] = useEndTurnMutation({
     refetchQueries: [GetActiveTransactionsDocument],
   });
-  const { gameId, game } = useCurrentGameContext();
+
+  const { game } = useCurrentGameContext();
 
   return (
     <Flex
@@ -73,7 +74,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           cursor="pointer"
           alignItems="center"
           _hover={{ background: 'cyan.100' }}
-          onClick={() => nextTurn({ variables: { gameId } })}
+          onClick={() => nextTurn({ variables: { gameId: game.id } })}
         >
           <Button>Następna tura</Button>
         </HStack>

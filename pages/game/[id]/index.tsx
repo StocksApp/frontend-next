@@ -12,7 +12,7 @@ import { useCurrentGameContext } from '../../../contexts/currentGameContext';
 const GameOverview = () => {
   const { query, push } = useRouter();
   const gameIdParam = parseInt(query.id as string, 10);
-  const { gameId, game, changeGame } = useCurrentGameContext();
+  const { game } = useCurrentGameContext();
 
   if (!gameIdParam) push(links.game.browse);
 
@@ -21,10 +21,6 @@ const GameOverview = () => {
       stocks: game?.markets ? game?.markets?.map((m) => m.name) : undefined,
     },
   });
-
-  if (gameIdParam !== gameId) {
-    changeGame(gameIdParam);
-  }
 
   const markets = marketsNames?.stocksSummary;
 
