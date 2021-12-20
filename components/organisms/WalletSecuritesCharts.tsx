@@ -1,7 +1,11 @@
 import React from 'react';
 import { Heading, HStack } from '@chakra-ui/react';
 import Card from '../molecules/Card';
-import Chart from 'react-apexcharts';
+import { isClient } from '../../utils/ssr';
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
 
 type TMarketEntry = { ticker: string; market: string; quantity: number };
 
@@ -25,23 +29,25 @@ const WalletSecuritesCharts = ({
   });
 
   return (
-    <Card mt={5}>
-      <Heading>Podział aktywów w obrębie {marketName}</Heading>
-      <HStack>
-        <Chart
-          options={{ labels, title: { text: 'Ilość aktywu' } }}
-          series={series}
-          type="donut"
-          width="380"
-        />
-        <Chart
-          options={{ labels, title: { text: 'Szacowana wartość' } }}
-          series={valueSeries}
-          type="donut"
-          width="380"
-        />
-      </HStack>
-    </Card>
+    isClient && (
+      <Card mt={5}>
+        <Heading>Podział aktywów w obrębie {marketName}</Heading>
+        <HStack>
+          <ReactApexChart
+            options={{ labels, title: { text: 'Ilość aktywu' } }}
+            series={series}
+            type="donut"
+            width="380"
+          />
+          <ReactApexChart
+            options={{ labels, title: { text: 'Szacowana wartość' } }}
+            series={valueSeries}
+            type="donut"
+            width="380"
+          />
+        </HStack>
+      </Card>
+    )
   );
 };
 

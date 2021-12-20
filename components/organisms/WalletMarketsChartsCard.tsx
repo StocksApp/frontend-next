@@ -1,11 +1,15 @@
 import { Heading, HStack } from '@chakra-ui/react';
 import React from 'react';
 import Card from '../molecules/Card';
-import Chart from 'react-apexcharts';
 import {
   GetMarketsQuery,
   GetWalletSummaryQuery,
 } from '../../generated/graphql';
+import { isClient } from '../../utils/ssr';
+import dynamic from 'next/dynamic';
+const ReactApexChart = dynamic(() => import('react-apexcharts'), {
+  ssr: false,
+});
 
 const WalletMarketsChartsCard = ({
   walletData,
@@ -71,23 +75,28 @@ const WalletMarketsChartsCard = ({
   valueLabels.push('Dostępne środki');
 
   return (
-    <Card mt={5}>
-      <Heading>Podział aktywów pomiędzy rynki</Heading>
-      <HStack>
-        <Chart
-          options={{ labels, title: { text: 'Ilość aktywu na rynku' } }}
-          series={series}
-          type="donut"
-          width="380"
-        />
-        <Chart
-          options={{ labels: valueLabels, title: { text: 'Wartość na rynku' } }}
-          series={valueSeries}
-          type="donut"
-          width="380"
-        />
-      </HStack>
-    </Card>
+    isClient && (
+      <Card mt={5}>
+        <Heading>Podział aktywów pomiędzy rynki</Heading>
+        <HStack>
+          <ReactApexChart
+            options={{ labels, title: { text: 'Ilość aktywu na rynku' } }}
+            series={series}
+            type="donut"
+            width="380"
+          />
+          <ReactApexChart
+            options={{
+              labels: valueLabels,
+              title: { text: 'Wartość na rynku' },
+            }}
+            series={valueSeries}
+            type="donut"
+            width="380"
+          />
+        </HStack>
+      </Card>
+    )
   );
 };
 
