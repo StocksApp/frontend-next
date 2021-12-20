@@ -1,6 +1,10 @@
 import { Card } from '../molecules';
 import { VStack, HStack, Heading, Text, Button } from '@chakra-ui/react';
-import { GameRow, useStartGameMutation } from '../../generated/graphql';
+import {
+  GameRow,
+  useStartGameMutation,
+  GetUserGamesDocument,
+} from '../../generated/graphql';
 import { useRouter } from 'next/router';
 
 type GameInfoCardType = {
@@ -13,7 +17,9 @@ type GameInfoCardType = {
 
 //TODO add users count to displayed values
 const GameInfoCard = ({ game, markets }: GameInfoCardType) => {
-  const [startGame] = useStartGameMutation();
+  const [startGame] = useStartGameMutation({
+    refetchQueries: [{ query: GetUserGamesDocument }],
+  });
   const { push } = useRouter();
 
   const handleButtonClick = async (e: { preventDefault: () => void }) => {

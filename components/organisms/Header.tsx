@@ -21,7 +21,9 @@ import { links } from '../../config/urls';
 import { signOut, useSession } from 'next-auth/react';
 import {
   GetActiveTransactionsDocument,
+  GetWalletSummaryDocument,
   useEndTurnMutation,
+  GetUserGamesDocument,
 } from '../../generated/graphql';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
@@ -32,11 +34,18 @@ export type HeaderProps = FlexProps & {
 const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { data: session } = useSession();
-  const [nextTurn] = useEndTurnMutation({
-    refetchQueries: [GetActiveTransactionsDocument],
-  });
-
   const { game } = useCurrentGameContext();
+
+  const [nextTurn] = useEndTurnMutation({
+    refetchQueries: [
+      {
+        query: GetActiveTransactionsDocument,
+        variables: { gameId: game?.id ?? 0 },
+      },
+      { query: GetWalletSummaryDocument, variables: { gameId: game?.id ?? 0 } },
+      { query: GetUserGamesDocument },
+    ],
+  });
 
   return (
     <Flex

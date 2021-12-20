@@ -72,8 +72,8 @@ const CreateTransactionForm = ({
   const selectedMarket = watch('market');
   const [createTransaction, { loading }] = useCreateTransactionMutation({
     refetchQueries: [
-      { query: GetActiveTransactionsDocument },
-      { query: GetWalletSummaryDocument },
+      { query: GetActiveTransactionsDocument, variables: { gameId: game.id } },
+      { query: GetWalletSummaryDocument, variables: { gameId: game.id } },
     ],
   });
   const { data: marketsQueryData } = useGetMarketsQuery();
@@ -116,7 +116,7 @@ const CreateTransactionForm = ({
           quantity: parseInt(`${values.quantity}`, 10),
           minQuantity: parseInt(`${values.minQuantity}`, 10),
           priceLimit: parseInt(`${values.priceLimit}`, 10),
-          activationLimit: parseInt(`${values.priceLimit}`, 10),
+          activationLimit: parseInt(`${values.activationLimit}`, 10),
           gameId: game?.id,
           isSell: values.transactionKind === 'sell',
         },

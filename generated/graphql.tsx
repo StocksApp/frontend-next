@@ -359,7 +359,7 @@ export type GetActiveTransactionsQueryVariables = Exact<{
 }>;
 
 
-export type GetActiveTransactionsQuery = { __typename?: 'Query', getUserTransactions: Array<{ __typename?: 'TransactionRow', from: string, isSellTransaction: boolean, minQuantity?: number | null | undefined, priceLimit?: number | null | undefined, quantity: number, to?: string | null | undefined, ticker: string, isFullified: boolean, isCancelled: boolean, id: number }> };
+export type GetActiveTransactionsQuery = { __typename?: 'Query', getUserTransactions: Array<{ __typename?: 'TransactionRow', from: string, isSellTransaction: boolean, minQuantity?: number | null | undefined, priceLimit?: number | null | undefined, quantity: number, activationLimit?: number | null | undefined, to?: string | null | undefined, ticker: string, isFullified: boolean, isCancelled: boolean, id: number }> };
 
 export type GetMarketsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -755,6 +755,7 @@ export const GetActiveTransactionsDocument = gql`
     minQuantity
     priceLimit
     quantity
+    activationLimit
     to
     ticker
     isFullified
