@@ -71,7 +71,10 @@ const CreateTransactionForm = ({
   });
   const selectedMarket = watch('market');
   const [createTransaction, { loading }] = useCreateTransactionMutation({
-    refetchQueries: [GetActiveTransactionsDocument, GetWalletSummaryDocument],
+    refetchQueries: [
+      { query: GetActiveTransactionsDocument },
+      { query: GetWalletSummaryDocument },
+    ],
   });
   const { data: marketsQueryData } = useGetMarketsQuery();
   const [getTickers, { data: tickers }] = useGetTickersLazyQuery();
