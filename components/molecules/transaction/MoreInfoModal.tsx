@@ -22,7 +22,6 @@ export type MoreInfoModalProps = {
 };
 
 const MoreInfoModal = ({ transactionInModal, onClose }: MoreInfoModalProps) => {
-  console.log(transactionInModal);
   return (
     <Modal isOpen={!!transactionInModal} onClose={onClose}>
       <ModalOverlay />
