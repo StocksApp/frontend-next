@@ -12,7 +12,7 @@ type WalletInfoCardType = {
 
 const WalletInfoCard = ({ game, walletInfo }: WalletInfoCardType) => {
   return (
-    <Card>
+    <Card h="100%">
       <VStack>
         <Heading>Stan portfela i rozgrywki</Heading>
         <VStack>

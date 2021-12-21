@@ -32,8 +32,8 @@ const GameOverview = () => {
 
   return (
     <SidebarLayout>
-      <HStack>
-        <Card flex={1}>
+      <HStack justify="center" align="center" h="full">
+        {/* <Card flex={1}>
           <GenericTablePanel
             title={'Zdefiniowane strategie'}
             actionNodes={<StrategyModal gameId={game.id} />}
@@ -44,7 +44,7 @@ const GameOverview = () => {
               tableValues={[]}
             />
           </GenericTablePanel>
-        </Card>
+        </Card> */}
         <GameInfoCard game={game} markets={markets} />
       </HStack>
     </SidebarLayout>

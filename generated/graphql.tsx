@@ -20,6 +20,7 @@ export type GameParticipationRow = {
   clickedNextTurn: Scalars['Boolean'];
   gameId: Scalars['Int'];
   id: Scalars['Int'];
+  nextTurnClicked: Scalars['Boolean'];
   userId: Scalars['Int'];
 };
 
@@ -275,6 +276,7 @@ export type WalletSummary = {
   __typename?: 'WalletSummary';
   availableMoney: Scalars['Float'];
   blockedMoney: Scalars['Float'];
+  markings: Array<MarkingAtDay>;
   ownedSecurities: Array<SecuritiesRow>;
 };
 
@@ -361,7 +363,9 @@ export type GetActiveTransactionsQueryVariables = Exact<{
 
 export type GetActiveTransactionsQuery = { __typename?: 'Query', getUserTransactions: Array<{ __typename?: 'TransactionRow', from: string, isSellTransaction: boolean, minQuantity?: number | null | undefined, priceLimit?: number | null | undefined, quantity: number, activationLimit?: number | null | undefined, to?: string | null | undefined, ticker: string, isFullified: boolean, isCancelled: boolean, id: number }> };
 
-export type GetMarketsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetMarketsQueryVariables = Exact<{
+  stocks?: Maybe<Array<Scalars['String']> | Scalars['String']>;
+}>;
 
 
 export type GetMarketsQuery = { __typename?: 'Query', stocksSummary: Array<{ __typename?: 'StockSummary', name: string, readableName: string }> };
@@ -405,6 +409,13 @@ export type GetUserGamesQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetUserGamesQuery = { __typename?: 'Query', getUsersGames: Array<{ __typename?: 'GameRow', currentDate: string, turnDuration: number, from: string, id: number, initialWalletValue: number, isFinished: boolean, isStarted: boolean, to: string, markets: Array<{ __typename?: 'MarketsRow', id: number, name: string }> }> };
 
+export type GetWalletSummaryQueryVariables = Exact<{
+  gameId: Scalars['Int'];
+}>;
+
+
+export type GetWalletSummaryQuery = { __typename?: 'Query', getUserWallet: { __typename?: 'WalletSummary', availableMoney: number, blockedMoney: number, ownedSecurities: Array<{ __typename?: 'SecuritiesRow', ticker: string, quantity: number, market: string }>, markings: Array<{ __typename?: 'MarkingAtDay', date: string, marking: { __typename?: 'Marking', ticker: string, open: number, close: number } }> } };
+
 export type GetJoinableGamesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -416,13 +427,6 @@ export type StocksSummaryQueryVariables = Exact<{
 
 
 export type StocksSummaryQuery = { __typename?: 'Query', stocksSummary: Array<{ __typename?: 'StockSummary', name: string, startDate: string, endDate: string }> };
-
-export type GetWalletSummaryQueryVariables = Exact<{
-  gameId: Scalars['Int'];
-}>;
-
-
-export type GetWalletSummaryQuery = { __typename?: 'Query', getUserWallet: { __typename?: 'WalletSummary', availableMoney: number, blockedMoney: number, ownedSecurities: Array<{ __typename?: 'SecuritiesRow', ticker: string, quantity: number, market: string }> } };
 
 
 export const CreateGameDocument = gql`
@@ -793,8 +797,8 @@ export type GetActiveTransactionsQueryHookResult = ReturnType<typeof useGetActiv
 export type GetActiveTransactionsLazyQueryHookResult = ReturnType<typeof useGetActiveTransactionsLazyQuery>;
 export type GetActiveTransactionsQueryResult = Apollo.QueryResult<GetActiveTransactionsQuery, GetActiveTransactionsQueryVariables>;
 export const GetMarketsDocument = gql`
-    query getMarkets {
-  stocksSummary {
+    query getMarkets($stocks: [String!]) {
+  stocksSummary(stocks: $stocks) {
     name
     readableName
   }
@@ -813,6 +817,7 @@ export const GetMarketsDocument = gql`
  * @example
  * const { data, loading, error } = useGetMarketsQuery({
  *   variables: {
+ *      stocks: // value for 'stocks'
  *   },
  * });
  */
@@ -1047,6 +1052,55 @@ export function useGetUserGamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetUserGamesQueryHookResult = ReturnType<typeof useGetUserGamesQuery>;
 export type GetUserGamesLazyQueryHookResult = ReturnType<typeof useGetUserGamesLazyQuery>;
 export type GetUserGamesQueryResult = Apollo.QueryResult<GetUserGamesQuery, GetUserGamesQueryVariables>;
+export const GetWalletSummaryDocument = gql`
+    query GetWalletSummary($gameId: Int!) {
+  getUserWallet(gameId: $gameId) {
+    availableMoney
+    blockedMoney
+    ownedSecurities {
+      ticker
+      quantity
+      market
+    }
+    markings {
+      date
+      marking {
+        ticker
+        open
+        close
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWalletSummaryQuery__
+ *
+ * To run a query within a React component, call `useGetWalletSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWalletSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWalletSummaryQuery({
+ *   variables: {
+ *      gameId: // value for 'gameId'
+ *   },
+ * });
+ */
+export function useGetWalletSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>(GetWalletSummaryDocument, options);
+      }
+export function useGetWalletSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>(GetWalletSummaryDocument, options);
+        }
+export type GetWalletSummaryQueryHookResult = ReturnType<typeof useGetWalletSummaryQuery>;
+export type GetWalletSummaryLazyQueryHookResult = ReturnType<typeof useGetWalletSummaryLazyQuery>;
+export type GetWalletSummaryQueryResult = Apollo.QueryResult<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>;
 export const GetJoinableGamesDocument = gql`
     query getJoinableGames {
   getJoinableGames {
@@ -1122,44 +1176,3 @@ export function useStocksSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type StocksSummaryQueryHookResult = ReturnType<typeof useStocksSummaryQuery>;
 export type StocksSummaryLazyQueryHookResult = ReturnType<typeof useStocksSummaryLazyQuery>;
 export type StocksSummaryQueryResult = Apollo.QueryResult<StocksSummaryQuery, StocksSummaryQueryVariables>;
-export const GetWalletSummaryDocument = gql`
-    query GetWalletSummary($gameId: Int!) {
-  getUserWallet(gameId: $gameId) {
-    availableMoney
-    blockedMoney
-    ownedSecurities {
-      ticker
-      quantity
-      market
-    }
-  }
-}
-    `;
-
-/**
- * __useGetWalletSummaryQuery__
- *
- * To run a query within a React component, call `useGetWalletSummaryQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetWalletSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetWalletSummaryQuery({
- *   variables: {
- *      gameId: // value for 'gameId'
- *   },
- * });
- */
-export function useGetWalletSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>(GetWalletSummaryDocument, options);
-      }
-export function useGetWalletSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>(GetWalletSummaryDocument, options);
-        }
-export type GetWalletSummaryQueryHookResult = ReturnType<typeof useGetWalletSummaryQuery>;
-export type GetWalletSummaryLazyQueryHookResult = ReturnType<typeof useGetWalletSummaryLazyQuery>;
-export type GetWalletSummaryQueryResult = Apollo.QueryResult<GetWalletSummaryQuery, GetWalletSummaryQueryVariables>;

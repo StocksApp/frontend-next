@@ -22,11 +22,11 @@ export const links = {
       analysis: (id: string) => `/game/${id}/wallet/overwiev`,
       base: (id: string) => `/game/${id}/wallet`,
     },
-    strategies: {
-      base: (id: string) => `/game/${id}/strategies`,
-      overview: (id: string) => `/game/${id}/strategies`,
-      offenses: (id: string) => `/game/${id}/strategies/offenses`,
-    },
+    // strategies: {
+    //   base: (id: string) => `/game/${id}/strategies`,
+    //   overview: (id: string) => `/game/${id}/strategies`,
+    //   offenses: (id: string) => `/game/${id}/strategies/offenses`,
+    // },
   },
   stocks: {
     base: '/stocks',
@@ -61,6 +61,20 @@ export const sidebarMenuLinks: Record<
       },
     ],
   },
+  wallet: {
+    name: 'Portfel',
+    href: links.game.wallet.base,
+    links: [
+      {
+        name: 'Przeglądaj',
+        href: links.game.wallet.overview,
+      },
+      // {
+      //   name: 'Analiza',
+      //   href: links.game.wallet.analysis,
+      // },
+    ],
+  },
   transactions: {
     name: 'Transakcje',
     href: links.game.transactions.base,
@@ -79,32 +93,18 @@ export const sidebarMenuLinks: Record<
       },
     ],
   },
-  wallet: {
-    name: 'Portfel',
-    href: links.game.wallet.base,
-    links: [
-      {
-        name: 'Przeglądaj',
-        href: links.game.wallet.overview,
-      },
-      {
-        name: 'Analiza',
-        href: links.game.wallet.analysis,
-      },
-    ],
-  },
-  strategies: {
-    name: 'Strategie',
-    href: links.game.strategies.base,
-    links: [
-      {
-        name: 'Przeglądaj',
-        href: links.game.strategies.overview,
-      },
-      {
-        name: 'Wykroczenia',
-        href: links.game.strategies.offenses,
-      },
-    ],
-  },
+  // strategies: {
+  //   name: 'Strategie',
+  //   href: links.game.strategies.base,
+  //   links: [
+  //     {
+  //       name: 'Przeglądaj',
+  //       href: links.game.strategies.overview,
+  //     },
+  //     {
+  //       name: 'Wykroczenia',
+  //       href: links.game.strategies.offenses,
+  //     },
+  //   ],
+  // },
 };
