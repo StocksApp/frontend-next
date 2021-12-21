@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Card } from '.';
 import { useForm } from 'react-hook-form';
 import { Flex, Input, Button, Text } from '@chakra-ui/react';
@@ -7,8 +7,9 @@ import { isClient } from '../../utils/ssr';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { getSingleValueFromQuery } from '../../utils/url';
-import { useGetMarkingsForTickerQuery } from '../../generated/graphql';
+import { useGetMarkingsForTickerLazyQuery } from '../../generated/graphql';
 import { format, subDays } from 'date-fns';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 });
@@ -34,25 +35,45 @@ type TickerChartFormValues = {
 };
 
 const TickerChart = () => {
-  const { handleSubmit, register } = useForm<TickerChartFormValues>();
+  const { game } = useCurrentGameContext();
+
+  const { handleSubmit, register, setValue } = useForm<TickerChartFormValues>();
   const { query } = useRouter();
   const tickerVariables = {
     stock: getSingleValueFromQuery(query, 'market') ?? '',
     ticker: getSingleValueFromQuery(query, 'ticker') ?? '',
   };
-  const { data, refetch, loading } = useGetMarkingsForTickerQuery({
-    variables: {
-      ...tickerVariables,
-      startDate: format(subDays(Date.now(), 14), 'yyyy-MM-dd'),
-      endDate: format(Date.now(), 'yyyy-MM-dd'),
-    },
-  });
+
+  const [getMarkings, { data, loading }] = useGetMarkingsForTickerLazyQuery();
+
+  useEffect(() => {
+    if (game) {
+      const startDate = format(
+        subDays(new Date(game.currentDate), 30),
+        'yyyy-MM-dd'
+      );
+
+      getMarkings({
+        variables: {
+          ...tickerVariables,
+          startDate,
+          endDate: game.currentDate,
+        },
+      });
+
+      setValue('from', startDate);
+      setValue('to', game.currentDate);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [game, getMarkings]);
 
   const onSubmit = (values: TickerChartFormValues) => {
-    refetch({
-      ...tickerVariables,
-      startDate: values.from,
-      endDate: values.to,
+    getMarkings({
+      variables: {
+        ...tickerVariables,
+        startDate: values.from,
+        endDate: values.to,
+      },
     });
   };
 
@@ -60,8 +81,20 @@ const TickerChart = () => {
     <Card h="full">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex wrap="wrap" gridGap={2}>
-          <Input type="date" {...register('from')} minW="150px" flex={1} />
-          <Input type="date" {...register('to')} minW="150px" flex={1} />
+          <Input
+            type="date"
+            max={game?.currentDate}
+            {...register('from')}
+            minW="150px"
+            flex={1}
+          />
+          <Input
+            type="date"
+            max={game?.currentDate}
+            {...register('to')}
+            minW="150px"
+            flex={1}
+          />
           <Button type="submit" isLoading={loading} px={20} py={2} flex={1}>
             <Text mr={2}>Szukaj</Text>
             <SearchIcon />

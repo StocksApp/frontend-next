@@ -1,0 +1,28 @@
+mutation createTransaction(
+  $gameId: Int!
+  $isSell: Boolean!
+  $market: String!
+  $ticker: String!
+  $from: LocalDate!
+  $to: LocalDate
+  $quantity: Int!
+  $minQuantity: Int
+  $priceLimit: Float
+  $activationLimit: Float
+) {
+  addTransactionDefinition(
+    gameId: $gameId
+    isSellTransaction: $isSell
+    marketName: $market
+    ticker: $ticker
+    startDate: $from
+    endDate: $to
+    quantity: $quantity
+    minQuantity: $minQuantity
+    priceLimit: $priceLimit
+    activationLimit: $activationLimit
+  ) {
+    from
+    id
+  }
+}

@@ -1,0 +1,12 @@
+query getTickersMarkings($stock: String!, $tickers: [String!]!, $startDate: LocalDate, $endDate: LocalDate) {
+  getManyMarkings(stock: $stock, tickers: $tickers, startDate: $startDate, endDate: $endDate) {
+    marking {
+      close
+      high
+      low
+      open
+      ticker
+      volume
+    }
+  }
+}

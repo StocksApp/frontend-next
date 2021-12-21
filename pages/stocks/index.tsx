@@ -1,4 +1,3 @@
-import { NextPage } from 'next';
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { StocksCard } from '../../components/organisms';
 

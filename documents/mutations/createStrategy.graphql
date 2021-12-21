@@ -1,0 +1,14 @@
+mutation createStrategy(
+  $gameId: Int!
+  $strategyType: String!
+  $configJson: String!
+) {
+  createUserStrategy(
+    gameId: $gameId
+    strategyType: $strategyType
+    configJson: $configJson
+  ) {
+    id
+    configJson
+  }
+}

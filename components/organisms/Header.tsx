@@ -12,13 +12,20 @@ import {
   MenuItem,
   Box,
   Spacer,
+  Button,
 } from '@chakra-ui/react';
 import { HamburgerIcon } from '@chakra-ui/icons';
 import { FiChevronDown } from 'react-icons/fi';
-import { useRouter } from 'next/router';
 import { NavLinkItem } from '../molecules';
 import { links } from '../../config/urls';
 import { signOut, useSession } from 'next-auth/react';
+import {
+  GetActiveTransactionsDocument,
+  GetWalletSummaryDocument,
+  useEndTurnMutation,
+  GetUserGamesDocument,
+} from '../../generated/graphql';
+import { useCurrentGameContext } from '../../contexts/currentGameContext';
 
 export type HeaderProps = FlexProps & {
   onOpen: () => void;
@@ -27,6 +34,18 @@ export type HeaderProps = FlexProps & {
 const Header = ({ onOpen, ...props }: HeaderProps) => {
   const isMobile = useBreakpointValue({ base: true, md: false });
   const { data: session } = useSession();
+  const { game } = useCurrentGameContext();
+
+  const [nextTurn] = useEndTurnMutation({
+    refetchQueries: [
+      {
+        query: GetActiveTransactionsDocument,
+        variables: { gameId: game?.id ?? 0 },
+      },
+      { query: GetWalletSummaryDocument, variables: { gameId: game?.id ?? 0 } },
+      { query: GetUserGamesDocument },
+    ],
+  });
 
   return (
     <Flex
@@ -48,14 +67,31 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           />
 
           <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-            Logo
+            StocksApp
           </Text>
         </>
       )}
       <Spacer />
       <Box flex="0">
-        <NavLinkItem href={links.stocks.browse}>Notowania</NavLinkItem>
+        <NavLinkItem
+          href={links.stocks.browse + (game ? `?id=${game?.id}` : '')}
+        >
+          Notowania
+        </NavLinkItem>
       </Box>
+      {game && game.isStarted && !game.isFinished && (
+        <HStack
+          p={4}
+          m={4}
+          borderRadius={10}
+          cursor="pointer"
+          alignItems="center"
+          _hover={{ background: 'cyan.100' }}
+          onClick={() => nextTurn({ variables: { gameId: game.id } })}
+        >
+          <Button>Następna tura</Button>
+        </HStack>
+      )}
       <Flex alignItems={'center'}>
         <Menu>
           <MenuButton
@@ -66,7 +102,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
           >
             <HStack>
               <Avatar size={'sm'} src={'/static/tracz.jpg'} />
-              <Text fontSize="sm">{session?.user.userName}</Text>
+              <Text fontSize="sm">{session?.user?.userName}</Text>
 
               {!isMobile && (
                 <Box display={{ base: 'none', md: 'flex' }}>

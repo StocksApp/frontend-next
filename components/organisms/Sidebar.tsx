@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode } from 'react';
 import {
   Box,
   Drawer,
@@ -15,6 +15,8 @@ import {
   Select,
 } from '@chakra-ui/react';
 import { useCurrentGameContext } from '../../contexts/currentGameContext';
+import { useRouter } from 'next/router';
+import { useGetUserGamesQuery } from '../../generated/graphql';
 
 export type SidebarProps = {
   isOpen: boolean;
@@ -24,10 +26,15 @@ export type SidebarProps = {
 
 const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
   const isDrawer = useBreakpointValue({ base: true, md: false });
-  const { gameId } = useCurrentGameContext();
-  const [games, _] = useState<string[]>(
-    ['Poza rozgrywką'].concat(gameId ? [`${gameId}`] : []) // TODO add better listing of games that user participates in
-  );
+  const { game } = useCurrentGameContext();
+  const { data } = useGetUserGamesQuery();
+  const games = data?.getUsersGames?.map((g) => g.id) || [];
+
+  const { push } = useRouter();
+
+  const handleGameSelection = (id: number) => {
+    push(`/game/${id}`);
+  };
 
   return !isDrawer ? (
     <Box
@@ -39,15 +46,19 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
     >
       <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
         <Text fontSize="2xl" fontFamily="monospace" fontWeight="bold">
-          Logo
+          StocksApp
         </Text>
         {/* <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} /> */}
       </Flex>
       <Box p={4}>
         <Text>Wybierz grę:</Text>
-        <Select defaultValue="Poza rozgrywką">
+        <Select defaultValue={game?.id || 'Poza rozgrywką'}>
           {games.map((game, index) => (
-            <option value={game} key={index}>
+            <option
+              value={game}
+              key={index}
+              onClick={() => handleGameSelection(game)}
+            >
               {game}
             </option>
           ))}
@@ -59,7 +70,7 @@ const Sidebar = ({ isOpen, children, onClose, ...props }: SidebarProps) => {
     <Drawer isOpen={isOpen} placement="left" onClose={onClose} isFullHeight>
       <DrawerOverlay>
         <DrawerContent>
-          <DrawerHeader>Logo</DrawerHeader>
+          <DrawerHeader>StocksApp</DrawerHeader>
           <DrawerCloseButton />
           <Box p={4}>
             <Text>Wybierz grę:</Text>

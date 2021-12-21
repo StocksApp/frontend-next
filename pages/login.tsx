@@ -61,6 +61,7 @@ const Login: NextPage = () => {
       if (!result || result.error) throw new Error(result?.error || 'catchAll');
       push(result?.url || links.landing);
     } catch (e) {
+      console.log(e);
       setError('emailOrUserName', { message: 'Błędne dane użytkownika' });
       setError('password', { message: 'Błędne dane użytkownika' });
     }

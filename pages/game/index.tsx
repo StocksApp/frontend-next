@@ -1,29 +1,17 @@
 import SidebarLayout from '../../components/layouts/SidebarLayout';
 import { Card } from '../../components/molecules';
-import {
-  Table,
-  Thead,
-  TableCaption,
-  Tr,
-  Th,
-  Td,
-  Tbody,
-  Button,
-} from '@chakra-ui/react';
+import { Table, Thead, Tr, Th, Td, Tbody, Button } from '@chakra-ui/react';
 import { useGetJoinableGamesQuery } from '../../generated/graphql';
-import { useCurrentGameContext } from '../../contexts/currentGameContext';
 import { useRouter } from 'next/router';
 import { links } from '../../config/urls';
 
 const Game = () => {
   const { data } = useGetJoinableGamesQuery();
-  const { changeGame } = useCurrentGameContext();
   const { push } = useRouter();
   return (
     <SidebarLayout>
       <Card h="full">
         <Table variant="simple">
-          <TableCaption>Uproszczony widok aktywnych gier</TableCaption>
           <Thead>
             <Tr>
               <Th>Początek okresu gry</Th>
@@ -44,7 +32,6 @@ const Game = () => {
                   <Td>
                     <Button
                       onClick={() => {
-                        changeGame(game.id);
                         push(links.game.overview(`${game.id}`));
                       }}
                     >

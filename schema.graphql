@@ -1,8 +1,20 @@
+type GameParticipationRow {
+  clickedNextTurn: Boolean!
+  gameId: Int!
+  id: Int!
+  nextTurnClicked: Boolean!
+  userId: Int!
+}
+
 type GameRow {
   currentDate: LocalDate!
   from: LocalDate!
   id: Int!
   initialWalletValue: Int!
+  isFinished: Boolean!
+  isStarted: Boolean!
+  markets: [MarketsRow!]!
+  ownerId: Int!
   private: Boolean!
   to: LocalDate!
   turnDuration: Int!
@@ -13,6 +25,11 @@ scalar LocalDate
 type LoginInfo {
   tokens: Tokens!
   userInfo: User!
+}
+
+type MarketsRow {
+  id: Int!
+  name: String!
 }
 
 type Marking {
@@ -30,17 +47,36 @@ type MarkingAtDay {
 }
 
 type Mutation {
+  addTransactionDefinition(activationLimit: Float, endDate: LocalDate, gameId: Int!, isSellTransaction: Boolean!, marketName: String!, minQuantity: Int, priceLimit: Float, quantity: Int!, startDate: LocalDate!, ticker: String!): TransactionRow!
   createGame(endDate: LocalDate!, isPrivate: Boolean!, startDate: LocalDate!, stocks: [String!]!, turnDuration: Int!, userIds: [Int!], walletValue: Int!): Int!
   createUser(email: String!, password: String!, userName: String!): LoginInfo!
+  createUserStrategy(configJson: String!, gameId: Int!, strategyType: String!): UserStrategyRow!
+  deleteUserStrategy(userStrategyId: Int!): Int!
+  joinGame(gameId: Int!): GameParticipationRow!
   loginByMail(email: String!, password: String!): LoginInfo!
   loginByUserName(password: String!, userName: String!): LoginInfo!
+  nextTurn(gameId: Int!): Int!
   refreshToken(refreshToken: String!): LoginInfo!
+  startGame(gameId: Int!): String!
 }
 
 type Query {
   getJoinableGames: [GameRow!]!
+  getManyMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, tickers: [String!]!): [MarkingAtDay!]!
   getMarkings(endDate: LocalDate, startDate: LocalDate, stock: String!, ticker: String!): [MarkingAtDay!]!
+  getUserStrategies(gameId: Int!): [UserStrategyRow!]!
+  getUserTransactions(gameId: Int!): [TransactionRow!]!
+  getUserWallet(gameId: Int!): WalletSummary!
+  getUsersGames(onlyActive: Boolean): [GameRow!]!
   stocksSummary(stocks: [String!]): [StockSummary!]!
+}
+
+type SecuritiesRow {
+  id: Int!
+  market: String!
+  quantity: Int!
+  ticker: String!
+  walletId: Int!
 }
 
 type SecurityInfo {
@@ -62,8 +98,36 @@ type Tokens {
   refreshToken: String!
 }
 
+type TransactionRow {
+  activationLimit: Float
+  from: LocalDate!
+  id: Int!
+  isCancelled: Boolean!
+  isFullified: Boolean!
+  isSellTransaction: Boolean!
+  minQuantity: Int
+  priceLimit: Float
+  quantity: Int!
+  ticker: String!
+  to: LocalDate
+}
+
 type User {
   email: String!
   id: Int!
   userName: String!
+}
+
+type UserStrategyRow {
+  configJson: String!
+  id: Int!
+  strategyId: Int!
+  userGameId: Int!
+}
+
+type WalletSummary {
+  availableMoney: Float!
+  blockedMoney: Float!
+  markings: [MarkingAtDay!]!
+  ownedSecurities: [SecuritiesRow!]!
 }
