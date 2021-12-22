@@ -14,6 +14,22 @@ const ReactApexChart = dynamic(() => import('react-apexcharts'), {
   ssr: false,
 });
 
+const WASM = dynamic({
+  loader: async () => {
+    const ARIMA = await import('arima/async');
+    const arima = new ARIMA({ auto: true });
+    const ts = Array(24)
+      .fill(0)
+      .map((_, i) => i + Math.random() / 5);
+    const autoarima = arima.fit(ts);
+    const [p, e] = autoarima.predict(12);
+    console.log(p);
+    console.log(e);
+    // eslint-disable-next-line react/display-name
+    return () => <div>działa</div>;
+  },
+});
+
 const chartOptions = (ticker?: string) => ({
   chart: {
     id: 'tickerChart',
@@ -77,8 +93,21 @@ const TickerChart = () => {
     });
   };
 
+  // const arima = new ARIMA({ auto: true });
+
+  // const autoarima = useMemo(() => {
+  //   if (data) {
+  //     const open = data.getMarkings.map((m) => m.marking.open);
+  //     const autoarima = arima.fit(open);
+  //     const [p, e] = autoarima.predict(12);
+  //     console.log(p);
+  //     console.log(e);
+  //   }
+  // }, [data]);
+
   return (
     <Card h="full">
+      <WASM />
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex wrap="wrap" gridGap={2}>
           <Input
