@@ -23,6 +23,7 @@
     "@graphql-codegen/schema-ast": "^2.2.0",
     "@types/graphql": "^14.5.0",
     "apexcharts": "^3.29.0",
+    "arima": "^0.2.5",
     "date-fns": "^2.25.0",
     "eslint-plugin-react": "^7.26.1",
     "framer-motion": "^4",
