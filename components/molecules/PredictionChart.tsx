@@ -94,7 +94,7 @@ const PredictionChart = () => {
       method: 'POST',
     });
     const { pred } = await res.json();
-    console.log(pred);
+    // console.log(pred);
     setPredictions(pred);
   };
 
@@ -120,12 +120,22 @@ const PredictionChart = () => {
   // console.log(closeMarkings);
   const labels = closeMarkings[0].concat(
     Array.from({ length: getValues('numberOfDays') }).map((_, idx) =>
-      format(addDays(new Date(game.currentDate), idx + 1), 'yyyy-MM-dd')
+      format(addDays(new Date(game.currentDate), idx), 'yyyy-MM-dd')
     )
   );
   // console.log(labels);
-  const series = closeMarkings[1].concat(predictions);
-  // console.log(series);
+  const seriesHist = closeMarkings[1].concat(
+    Array.from(predictions).map((_) => null)
+  );
+
+  const seriesPred = Array.from(closeMarkings[1])
+    .map((e, idx) => {
+      if (idx + 1 === closeMarkings[1].length) return e;
+      else return null;
+    })
+    .concat(predictions);
+
+  console.log(seriesPred);
   return (
     <Card h="full">
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -176,7 +186,12 @@ const PredictionChart = () => {
           }}
           series={[
             {
-              data: series,
+              data: seriesHist,
+              name: 'Dane historyczne',
+            },
+            {
+              data: seriesPred,
+              name: 'Przewidywany kurs',
             },
           ]}
         />

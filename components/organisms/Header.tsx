@@ -101,7 +101,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
             _focus={{ boxShadow: 'none' }}
           >
             <HStack>
-              <Avatar size={'sm'} src={'/static/tracz.jpg'} />
+              <Avatar size={'sm'} src={''} />
               <Text fontSize="sm">{session?.user?.userName}</Text>
 
               {!isMobile && (
@@ -117,7 +117,7 @@ const Header = ({ onOpen, ...props }: HeaderProps) => {
                 signOut();
               }}
             >
-              Sign out
+              Wyloguj
             </MenuItem>
           </MenuList>
         </Menu>
