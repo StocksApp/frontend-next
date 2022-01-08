@@ -243,9 +243,7 @@ const CreateTransactionForm = ({
             name="transactionKind"
             render={({ field }) => (
               <FormControl isInvalid={!!errors.transactionKind}>
-                <FormLabel htmlFor="stocks">
-                  Dostępne w rozgrywce rynki
-                </FormLabel>
+                <FormLabel htmlFor="stocks">Rodzaj transakcji</FormLabel>
                 <CustomRadioGroup
                   options={[
                     { label: 'Kupno', value: 'buy' },
