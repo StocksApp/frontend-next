@@ -78,7 +78,7 @@ const TickerChart = () => {
   };
 
   return (
-    <Card h="full">
+    <Card h="80%">
       <form onSubmit={handleSubmit(onSubmit)}>
         <Flex wrap="wrap" gridGap={2}>
           <Input
