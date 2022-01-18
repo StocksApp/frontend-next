@@ -28,7 +28,7 @@ const FloatingHeader = () => {
             <Avatar />
           </a>
         </Link>
-        <Heading ml={8}>LOGO</Heading>
+        <Heading ml={8}>StocksApp</Heading>
         <Spacer />
         <HStack spacing={8}>
           <Link href={links.stocks.browse} passHref>
